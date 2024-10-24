@@ -84,12 +84,12 @@ public class LoginPage {
 		loginBp.setCenter(loginLbl);
 		layoutBp.setTop(navbarBp);
 		
-		loginBp.setPadding(new Insets(50));
+		loginBp.setPadding(new Insets(height/17.54, width/30.72, height/17.54, width/30.72));
 		
 		layoutBp.setCenter(sp);
 		sp.setContent(gp);
 		sp.setMaxWidth(width / 1.065);
-	    sp.setMaxHeight(height / 2); 
+	    sp.setMaxHeight(height); 
 		
 		gp.add(usernameLbl, 0, 0);
 	    gp.add(usernameTxt, 1, 0);
@@ -98,16 +98,16 @@ public class LoginPage {
 	    
 	    gp.setVgap(height / 40);
 		gp.setHgap(width / 77);
-		sp.setPadding(new Insets(50));
+		sp.setPadding(new Insets(height/17.54, width/30.72, height/17.54, width/30.72));
 		
-		VBox bottomLayout = new VBox(50);
+		VBox bottomLayout = new VBox(height/17.5);
 	    bottomLayout.setAlignment(Pos.CENTER);
 	    bottomLayout.getChildren().addAll(errorLbl, loginBtn);
 
 	    bottomBp.setCenter(bottomLayout);
-	    bottomBp.setPadding(new Insets(100));
+	    bottomBp.setPadding(new Insets(height/17.54, width/15.36, height/17.54, width/15.36));
 
-	    usernameTxt.setMinWidth(width / 1.25);
+	    usernameTxt.setMinWidth(width / 1.3);
 
 	    layoutBp.setBottom(bottomBp);
 	    BorderPane.setAlignment(bottomLayout, Pos.CENTER);
