@@ -1,9 +1,8 @@
 package view;
 
-import client.Main;
+import client.SceneManager;
 import controller.UserController;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -18,7 +17,7 @@ import javafx.stage.*;
 
 public class LoginPage {
 	
-	private Stage stage;
+	private SceneManager sceneManager;
 	private Rectangle2D screen = Screen.getPrimary().getVisualBounds();
 	private double width = screen.getWidth() * 0.80;
 	private double height = screen.getHeight() * 0.85;
@@ -38,7 +37,7 @@ public class LoginPage {
 
 	public LoginPage(Stage stage) {
 		
-		this.stage = stage;
+		sceneManager = new SceneManager(stage);
 		initLogin();
 		setLoginAlignment();
 		setLoginHandler();
@@ -118,17 +117,8 @@ public class LoginPage {
 		
 		loginBtn.setOnAction(this::handleLogin);
 		
-		loginNavItem.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent event) {
-				Main.changeSceneToLoginPage();
-			}
-		});
-		
-		registerNavItem.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent event) {
-				Main.changeSceneToRegisterPage();
-			}
-		});
+		loginNavItem.setOnAction(event -> sceneManager.switchToPage("login"));
+        registerNavItem.setOnAction(event -> sceneManager.switchToPage("register"));
 		
 	}
 	

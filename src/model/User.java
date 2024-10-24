@@ -2,12 +2,8 @@ package model;
 
 public class User {
 
-	private String userId;
-    private String username;
-    private String password;
-    private String phoneNumber;
-    private String address;
-    private String role;
+	private String userId, username, password, phoneNumber, address, role;
+	
 	public User(String userId, String username, String password, String phoneNumber, String address, String role) {
 		super();
 		this.userId = userId;
@@ -53,5 +49,5 @@ public class User {
 	public void setRole(String role) {
 		this.role = role;
 	}
-
+	
 }
