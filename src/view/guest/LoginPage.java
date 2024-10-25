@@ -31,7 +31,7 @@ public class LoginPage {
 	private Menu menu;
 	private MenuItem loginNavItem, registerNavItem;
 	
-	private Label usernameLbl, passwordLbl, loginLbl, errorLbl;
+	private Label usernameLbl, passwordLbl, titleLbl, errorLbl;
 	private TextField usernameTxt;
 	private PasswordField passwordTxt;
 	private Button loginBtn;
@@ -62,8 +62,8 @@ public class LoginPage {
 		navbar.getMenus().add(menu);
 		menu.getItems().addAll(loginNavItem, registerNavItem);
 		
-		loginLbl = new Label("Login Page");
-		loginLbl.setFont(new Font(24));
+		titleLbl = new Label("Login Page");
+		titleLbl.setFont(new Font(24));
 		usernameLbl = new Label("Username");
 		passwordLbl = new Label("Password");
 		errorLbl = new Label("");
@@ -81,7 +81,7 @@ public class LoginPage {
 		
 		navbarBp.setTop(navbar);
 		navbarBp.setCenter(loginBp);
-		loginBp.setCenter(loginLbl);
+		loginBp.setCenter(titleLbl);
 		layoutBp.setTop(navbarBp);
 		
 		loginBp.setPadding(new Insets(height/17.54, width/30.72, height/17.54, width/30.72));
@@ -137,7 +137,7 @@ public class LoginPage {
             if(errorMsg.equals("")) {
             	User user = UserController.getUserByUsername(username);
             	if(user.getRole().equals("Buyer")) sceneManager.switchToPage("buyer-homepage");
-            	else if(user.getRole().equals("Seller")) sceneManager.switchToPage("sel-homepage");
+            	else if(user.getRole().equals("Seller")) sceneManager.switchToPage("seller-homepage");
             }
 			
 		}

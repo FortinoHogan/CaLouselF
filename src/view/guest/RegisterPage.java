@@ -29,7 +29,7 @@ public class RegisterPage {
 	private Menu menu;
 	private MenuItem loginNavItem, registerNavItem;
 	
-	private Label usernameLbl, passwordLbl, phoneNumberLbl, addressLbl, rolesLbl, registerLbl, errorLbl;
+	private Label usernameLbl, passwordLbl, phoneNumberLbl, addressLbl, rolesLbl, titleLbl, validateLbl;
 	private TextField usernameTxt, phoneNumberTxt, addressTxt;
 	private PasswordField passwordTxt;
 	private ToggleGroup role;
@@ -62,14 +62,14 @@ public class RegisterPage {
 		navbar.getMenus().add(menu);
 		menu.getItems().addAll(loginNavItem, registerNavItem);
 		
-		registerLbl = new Label("Register Page");
-		registerLbl.setFont(new Font(24));
+		titleLbl = new Label("Register Page");
+		titleLbl.setFont(new Font(24));
 		usernameLbl = new Label("Username");
 		passwordLbl = new Label("Password");
 		phoneNumberLbl = new Label("Phone Number");
 		addressLbl = new Label("Address");
 		rolesLbl = new Label("Roles");
-		errorLbl = new Label("");
+		validateLbl = new Label("");
 		
 		usernameTxt = new TextField();
 		usernameTxt.setPromptText("Must be filled and at least 3 characters long");
@@ -95,8 +95,9 @@ public class RegisterPage {
 		
 		navbarBp.setTop(navbar);
 		navbarBp.setCenter(registerBp);
-		registerBp.setCenter(registerLbl);
+		registerBp.setCenter(titleLbl);
 		layoutBp.setTop(navbarBp);
+		layoutBp.setBottom(bottomBp);
 		
 		registerBp.setPadding(new Insets(height/17.54, width/30.72, height/17.54, width/30.72));
 		
@@ -123,14 +124,13 @@ public class RegisterPage {
 		
 		VBox bottomLayout = new VBox(height/17.5);
 	    bottomLayout.setAlignment(Pos.CENTER);
-	    bottomLayout.getChildren().addAll(errorLbl, registerBtn);
+	    bottomLayout.getChildren().addAll(validateLbl, registerBtn);
 
 	    bottomBp.setCenter(bottomLayout);
 	    bottomBp.setPadding(new Insets(height/17.54, width/15.36, height/17.54, width/15.36));
 
 	    usernameTxt.setMinWidth(width / 1.3);
 
-	    layoutBp.setBottom(bottomBp);
 	    BorderPane.setAlignment(bottomLayout, Pos.CENTER);
 	}
 	
@@ -155,9 +155,19 @@ public class RegisterPage {
 	                  ? role.getSelectedToggle().getUserData().toString() : null;
 			
 			String errorMsg = UserController.checkAccountValidtion(username, password, phoneNumber, address, roleStr);
-			errorLbl.setText(errorMsg);
-            errorLbl.setTextFill(Color.RED);
-			
+			if(errorMsg.equals("")) {
+				UserController.register(username, password, phoneNumber, address, roleStr);
+				validateLbl.setText("Register Success");
+	            validateLbl.setTextFill(Color.GREEN);
+	            usernameTxt.setText("");
+	            passwordTxt.setText("");
+	            phoneNumberTxt.setText("");
+	            addressTxt.setText("");
+	            role.selectToggle(null);
+			} else {
+				validateLbl.setText(errorMsg);
+	            validateLbl.setTextFill(Color.RED);
+			}
 		}
 		
 	}

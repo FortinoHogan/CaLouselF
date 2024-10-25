@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import client.SceneManager;
 import controller.ItemController;
+import controller.UserController;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -26,11 +27,15 @@ public class SellerHomePage {
 	private double width = screen.getWidth() * 0.80;
 	private double height = screen.getHeight() * 0.85;
 	
-	private BorderPane layoutBp, navbarBp, buyerBp, bottomBp;
+	private BorderPane layoutBp, navbarBp, titleBp, bottomBp;
 	private GridPane gp;
 	private ScrollPane sp;
 	
-	private Label nameLbl, categoryLbl, sizeLbl, priceLbl, homeLbl, errorLbl;
+	private MenuBar navbar;
+	private Menu menu;
+	private MenuItem uploadNavItem, homeNavItem;
+	
+	private Label nameLbl, categoryLbl, sizeLbl, priceLbl, titleLbl, errorLbl;
 	private TextField nameTxt, categoryTxt, sizeTxt, priceTxt;
 	private Button uploadBtn;
 	
@@ -45,19 +50,26 @@ public class SellerHomePage {
 		setSellerHomePageHandler();
 		
 	}
-	
+
 	private void initSellerHomePage() {
 		
 		layoutBp = new BorderPane();
 		navbarBp = new BorderPane();
-		buyerBp = new BorderPane();
+		titleBp = new BorderPane();
 		bottomBp = new BorderPane();
 		
 		gp = new GridPane();
 		sp = new ScrollPane();
 		
-		homeLbl = new Label("Home Page");
-		homeLbl.setFont(new Font(24));
+		navbar = new MenuBar();
+		menu = new Menu("Action");
+		homeNavItem = new MenuItem("Home");
+		uploadNavItem = new MenuItem("Upload");
+		navbar.getMenus().add(menu);
+		menu.getItems().addAll(homeNavItem, uploadNavItem);
+		
+		titleLbl = new Label("Home Page");
+		titleLbl.setFont(new Font(24));
 		nameLbl = new Label("Item Name");
 		categoryLbl = new Label("Item Category");
 		sizeLbl = new Label("Item Size");
@@ -109,59 +121,26 @@ public class SellerHomePage {
 	
 	private void setSellerHomePageAlignment() {
 		
-		navbarBp.setCenter(buyerBp);
-		buyerBp.setCenter(homeLbl);
+		navbarBp.setTop(navbar);
+		navbarBp.setCenter(titleBp);
+		titleBp.setCenter(titleLbl);
 		layoutBp.setTop(navbarBp);
 		layoutBp.setCenter(table);
 		layoutBp.setBottom(bottomBp);
-		bottomBp.setCenter(gp);
-		
-		gp.add(nameLbl, 0, 0);
-	    gp.add(nameTxt, 1, 0);
-	    gp.add(categoryLbl, 0, 1);
-	    gp.add(categoryTxt, 1, 1);
-	    gp.add(sizeLbl, 0, 2);
-	    gp.add(sizeTxt, 1, 2);
-	    gp.add(priceLbl, 0, 3);
-	    gp.add(priceTxt, 1, 3);
-	    gp.add(uploadBtn, 1, 4);
 	    
-	    gp.setVgap(height / 40);
-		gp.setHgap(width / 77);
-		
-		VBox bottomLayout = new VBox(height/17.5);
-	    bottomLayout.setAlignment(Pos.CENTER);
-	    bottomLayout.getChildren().addAll(errorLbl, uploadBtn);
-	    
-		bottomBp.setBottom(bottomLayout);
-	    
-		bottomBp.setPadding(new Insets(height/17.54, width/15.36, height/17.54, width/15.36));
-		
-		nameTxt.setMinWidth(width / 1.3);
-	    
-		buyerBp.setPadding(new Insets(height/17.54, width/30.72, height/17.54, width/30.72));
+		titleBp.setPadding(new Insets(height/17.54, width/30.72, height/17.54, width/30.72));
 		
 		table.setMaxWidth(width/1.065);
 		table.setMaxHeight(height/2);
 		
 	}
-		
+	
 	private void setSellerHomePageHandler() {
 		
-		uploadBtn.setOnAction(this::handleUpload);
+		homeNavItem.setOnAction(event -> sceneManager.switchToPage("seller-homepage"));
+		uploadNavItem.setOnAction(event -> sceneManager.switchToPage("upload-item"));
 		
 	}
-	
-	private void handleUpload(ActionEvent e) {
-		
-		if(e.getSource() == uploadBtn) {
-			
-			
-			
-		}
-		
-	}
-
 
 	
 	public Scene createSellerHomePageScene() {

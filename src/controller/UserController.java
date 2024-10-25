@@ -25,11 +25,10 @@ public class UserController {
 		}
 	}
 
-	public static void register(String userId, String username, String password, String phoneNumber, String address, String role) {
+	public static void register(String username, String password, String phoneNumber, String address, String role) {
 		
-		String query = "INSERT INTO User " + "VALUES ('"+ userId +"', '"+ username +"', '"+ password +"', '"+ phoneNumber +"', '"+ address +"', '"+ role +"')";
+		String query = "INSERT INTO User " + "VALUES ('"+ generateUserId() +"', '"+ username +"', '"+ password +"', '"+ phoneNumber +"', '"+ address +"', '"+ role +"')";
 		
-		System.out.println(query);
 		con.execUpdate(query);
 	}
 
@@ -54,7 +53,6 @@ public class UserController {
         } else if (role == null || role.isEmpty()) {
             return "You must pick a role (Seller or Buyer)";
         } else {
-        	register(generateUserId(), username, password, phoneNum, address, role);
         	return "";        	
         }
 		
@@ -99,7 +97,7 @@ public class UserController {
 		String lastUserId = null;
 	    String newUserId = "US001";
 	    
-	    String query = "SELECT userId FROM User ORDER BY userId DESC LIMIT 1";
+	    String query = "SELECT User_id FROM User ORDER BY User_id DESC LIMIT 1";
 	    try {
 	        con.res = con.execQuery(query);
 	        if (con.res.next()) {

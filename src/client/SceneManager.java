@@ -21,10 +21,10 @@ public class SceneManager {
     public void switchToPage(String pageName) {
         switch (pageName) {
             case "register":
-//                RegisterPage registerPage = new RegisterPage(primaryStage);
-//                setScene(registerPage.createRegisterScene());
-            	SellerHomePage sellerHomePage2 = new SellerHomePage(primaryStage);
-            	setScene(sellerHomePage2.createSellerHomePageScene());
+                RegisterPage registerPage = new RegisterPage(primaryStage);
+                setScene(registerPage.createRegisterScene());
+//            	SellerHomePage sellerHomePage2 = new SellerHomePage(primaryStage);
+//            	setScene(sellerHomePage2.createSellerHomePageScene());
                 break;
             case "login":
                 LoginPage loginPage = new LoginPage(primaryStage);
@@ -37,6 +37,10 @@ public class SceneManager {
             case "seller-homepage":
             	SellerHomePage sellerHomePage = new SellerHomePage(primaryStage);
             	setScene(sellerHomePage.createSellerHomePageScene());
+            	break;
+            case "upload-item":
+            	UploadItemPage uploadItemPage = new UploadItemPage(primaryStage);
+            	setScene(uploadItemPage.createUploadItemPageScene());
             	break;
         }
     }
