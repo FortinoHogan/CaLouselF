@@ -1,5 +1,9 @@
 package controller;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import model.Item;
 import util.Connect;
 
 public class ItemController {
@@ -22,7 +26,29 @@ public class ItemController {
 		
 	}
 	
-	public static void viewItem() {
+	public static ArrayList<Item> viewItem() {
+		
+		String query = "SELECT * FROM Item";
+		ArrayList<Item> items = new ArrayList<>();
+		con.res = con.execQuery(query);
+		try {
+			while (con.res.next()) {
+			    String itemId = con.res.getString("Item_id");
+			    String itemName= con.res.getString("Item_name");
+			    String itemSize = con.res.getString("Item_size");
+			    String itemPrice = con.res.getString("Item_price");
+			    String itemCategory = con.res.getString("Item_category");
+			    String itemStatus = con.res.getString("Item_status");
+			    String itemWishlist = con.res.getString("Item_wishlist");
+			    String itemOfferStatus = con.res.getString("Item_offer_status");
+			    
+			    items.add(new Item(itemId, itemName, itemSize, itemPrice, itemCategory, itemStatus, itemWishlist, itemOfferStatus));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return items;
 		
 	}
 	

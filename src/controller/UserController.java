@@ -120,7 +120,7 @@ public class UserController {
 	    
 	}
 	
-	private static User getUserByUsername(String username) {
+	public static User getUserByUsername(String username) {
 		
 		String query = "SELECT * FROM User WHERE Username LIKE '%" + username + "%'";
 		User user = null;

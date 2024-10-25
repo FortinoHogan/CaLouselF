@@ -1,4 +1,4 @@
-package view;
+package view.guest;
 
 import client.SceneManager;
 import controller.UserController;
@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.*;
+import model.User;
 
 public class LoginPage {
 	
@@ -44,7 +45,7 @@ public class LoginPage {
 		
 	}
 	
-	public void initLogin() {
+	private void initLogin() {
 		
 		layoutBp = new BorderPane();
 		navbarBp = new BorderPane();
@@ -76,7 +77,7 @@ public class LoginPage {
 		
 	}
 	
-	public void setLoginAlignment() {
+	private void setLoginAlignment() {
 		
 		navbarBp.setTop(navbar);
 		navbarBp.setCenter(loginBp);
@@ -113,7 +114,7 @@ public class LoginPage {
 		
 	}
 	
-	public void setLoginHandler() {
+	private void setLoginHandler() {
 		
 		loginBtn.setOnAction(this::handleLogin);
 		
@@ -122,7 +123,7 @@ public class LoginPage {
 		
 	}
 	
-	public void handleLogin(ActionEvent e) {
+	private void handleLogin(ActionEvent e) {
 		
 		if(e.getSource() == loginBtn) {
 					
@@ -132,6 +133,12 @@ public class LoginPage {
 			String errorMsg = UserController.login(username, password);
 			errorLbl.setText(errorMsg);
             errorLbl.setTextFill(Color.RED);
+            
+            if(errorMsg.equals("")) {
+            	User user = UserController.getUserByUsername(username);
+            	if(user.getRole().equals("Buyer")) sceneManager.switchToPage("buyer-homepage");
+            	else if(user.getRole().equals("Seller")) sceneManager.switchToPage("sel-homepage");
+            }
 			
 		}
 		

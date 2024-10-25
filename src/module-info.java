@@ -3,6 +3,6 @@ module CaLouselF {
 	requires java.sql;
 	requires javafx.controls;
 	
-	exports client;
-	exports view;
+	opens model to javafx.base;
+	opens client;
 }

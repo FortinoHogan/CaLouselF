@@ -1,4 +1,4 @@
-package view;
+package view.guest;
 
 import client.SceneManager;
 import controller.UserController;
@@ -72,9 +72,9 @@ public class RegisterPage {
 		errorLbl = new Label("");
 		
 		usernameTxt = new TextField();
-		usernameTxt.setPromptText("Must be filled and at least 3 characters");
+		usernameTxt.setPromptText("Must be filled and at least 3 characters long");
 		passwordTxt = new PasswordField();
-		passwordTxt.setPromptText("Must be filled, at least 8 characters, and 1 special character");
+		passwordTxt.setPromptText("Must be filled, at least 8 characters long, and has 1 special character");
 		phoneNumberTxt = new TextField();
 		phoneNumberTxt.setPromptText("Must contain +62 and 10 numbers long");
 		addressTxt = new TextField();

@@ -57,4 +57,14 @@ public class Connect {
 		}
 	}
 	
+	public PreparedStatement prepareStatement(String query) {
+		PreparedStatement ps = null;
+		try {
+			ps = con.prepareStatement(query);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ps;
+	}
+	
 }
