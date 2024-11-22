@@ -15,8 +15,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import model.Page;
 
-public class UploadItemPage {
+public class UploadItemPage extends Page{
 
 	private SceneManager sceneManager;
 	private Rectangle2D screen = Screen.getPrimary().getVisualBounds();
@@ -38,13 +39,14 @@ public class UploadItemPage {
 	public UploadItemPage(Stage stage) {
 		
 		sceneManager = new SceneManager(stage);
-		initUploadItemPage();
-		setUploadItemPageAlignment();
-		setUploadItemPageHandler();
+		initPage();
+		setAlignment();
+		setHandler();
 		
 	}
 	
-	private void initUploadItemPage() {
+	@Override
+	public void initPage() {
 		
 		layoutBp = new BorderPane();
 		navbarBp = new BorderPane();
@@ -82,7 +84,8 @@ public class UploadItemPage {
 		
 	}
 
-	private void setUploadItemPageAlignment() {
+	@Override
+	public void setAlignment() {
 		
 		navbarBp.setTop(navbar);
 		navbarBp.setCenter(titleBp);
@@ -123,16 +126,18 @@ public class UploadItemPage {
 		
 	}
 	
-	private void setUploadItemPageHandler() {
+	@Override
+	public void setHandler() {
 		
-		uploadBtn.setOnAction(this::handleUpload);
+		uploadBtn.setOnAction(this::handlePage);
 		
 		homeNavItem.setOnAction(event -> sceneManager.switchToPage("seller-homepage"));
 		uploadNavItem.setOnAction(event -> sceneManager.switchToPage("upload-item"));
 		
 	}
 	
-	private void handleUpload(ActionEvent e) {
+	@Override
+	public void handlePage(ActionEvent e) {
 		
 		if(e.getSource() == uploadBtn) {
 			
@@ -159,7 +164,8 @@ public class UploadItemPage {
 		
 	}
 	
-	public Scene createUploadItemPageScene() {
+	@Override
+	public Scene createPageScene() {
 		
 		return new Scene(layoutBp, width, height);
 		

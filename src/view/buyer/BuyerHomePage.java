@@ -1,6 +1,7 @@
 package view.buyer;
 
 import client.SceneManager;
+import javafx.event.ActionEvent;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -9,8 +10,9 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.Item;
+import model.Page;
 
-public class BuyerHomePage {
+public class BuyerHomePage extends Page{
 
 	private SceneManager sceneManager;
 	private Rectangle2D screen = Screen.getPrimary().getVisualBounds();
@@ -30,13 +32,14 @@ public class BuyerHomePage {
 	public BuyerHomePage(Stage stage) {
 		
 		sceneManager = new SceneManager(stage);
-		initBuyerHomePage();
-		setBuyerHomePageAlignment();
-		setBuyerHomePageHandler();
+		initPage();
+		setAlignment();
+		setHandler();
 		
 	}
 	
-	private void initBuyerHomePage() {
+	@Override
+	public void initPage() {
 		
 		layoutBp = new BorderPane();
 		navbarBp = new BorderPane();
@@ -55,17 +58,23 @@ public class BuyerHomePage {
 		
 	}
 	
-	private void setBuyerHomePageAlignment() {
+	@Override
+	public void setAlignment() {
 		
 	}
 		
-	private void setBuyerHomePageHandler() {
+	@Override
+	public void setHandler() {
 		
 	}
 
 
+	@Override
+	public void handlePage(ActionEvent e) {
+	}
 	
-	public Scene createBuyerHomePageScene() {
+	@Override
+	public Scene createPageScene() {
      	
 		return new Scene(layoutBp, width, height);
 		

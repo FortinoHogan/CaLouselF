@@ -19,8 +19,9 @@ import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.Item;
+import model.Page;
 
-public class SellerHomePage {
+public class SellerHomePage extends Page{
 
 	private SceneManager sceneManager;
 	private Rectangle2D screen = Screen.getPrimary().getVisualBounds();
@@ -35,23 +36,22 @@ public class SellerHomePage {
 	private Menu menu;
 	private MenuItem uploadNavItem, homeNavItem;
 	
-	private Label nameLbl, categoryLbl, sizeLbl, priceLbl, titleLbl, errorLbl;
-	private TextField nameTxt, categoryTxt, sizeTxt, priceTxt;
-	private Button uploadBtn;
+	private Label titleLbl, errorLbl;
 	
 	private TableView<Item> table;
 	
 	public SellerHomePage(Stage stage) {
 		
 		sceneManager = new SceneManager(stage);
-		initSellerHomePage();
+		initPage();
 		initTable();
-		setSellerHomePageAlignment();
-		setSellerHomePageHandler();
+		setAlignment();
+		setHandler();
 		
 	}
-
-	private void initSellerHomePage() {
+	
+	@Override
+	public void initPage() {
 		
 		layoutBp = new BorderPane();
 		navbarBp = new BorderPane();
@@ -70,28 +70,13 @@ public class SellerHomePage {
 		
 		titleLbl = new Label("Home Page");
 		titleLbl.setFont(new Font(24));
-		nameLbl = new Label("Item Name");
-		categoryLbl = new Label("Item Category");
-		sizeLbl = new Label("Item Size");
-		priceLbl = new Label("Item Price");
 		errorLbl = new Label("");
-		
-		nameTxt = new TextField();
-		nameTxt.setPromptText("Must be filled and at least 3 characters long");
-		categoryTxt = new TextField();
-		categoryTxt.setPromptText("Must be filled and at least 3 characters long");
-		sizeTxt = new TextField();
-		sizeTxt.setPromptText("Must be filled");
-		priceTxt = new TextField();
-		priceTxt.setPromptText("Must be filled with numbers more than 0");
-		
-		uploadBtn = new Button("Upload");
 		
 		table = new TableView<Item>();
 		
 	}
 	
-	private void initTable() {
+	public void initTable() {
 		
 		TableColumn<Item, String>  nameCol = new TableColumn<Item, String>("Name");
 		nameCol.setCellValueFactory(new PropertyValueFactory<Item, String>("itemName"));
@@ -119,7 +104,8 @@ public class SellerHomePage {
 		
 	}
 	
-	private void setSellerHomePageAlignment() {
+	@Override
+	public void setAlignment() {
 		
 		navbarBp.setTop(navbar);
 		navbarBp.setCenter(titleBp);
@@ -135,15 +121,20 @@ public class SellerHomePage {
 		
 	}
 	
-	private void setSellerHomePageHandler() {
+	@Override
+	public void setHandler() {
 		
 		homeNavItem.setOnAction(event -> sceneManager.switchToPage("seller-homepage"));
 		uploadNavItem.setOnAction(event -> sceneManager.switchToPage("upload-item"));
 		
 	}
 
+	@Override
+	public void handlePage(ActionEvent e) {
+	}
 	
-	public Scene createSellerHomePageScene() {
+	@Override
+	public Scene createPageScene() {
      	
 		return new Scene(layoutBp, width, height);
 		

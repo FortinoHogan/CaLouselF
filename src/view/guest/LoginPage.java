@@ -14,9 +14,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.*;
+import model.Page;
 import model.User;
 
-public class LoginPage {
+public class LoginPage extends Page{
 	
 	private SceneManager sceneManager;
 	private Rectangle2D screen = Screen.getPrimary().getVisualBounds();
@@ -39,13 +40,14 @@ public class LoginPage {
 	public LoginPage(Stage stage) {
 		
 		sceneManager = new SceneManager(stage);
-		initLogin();
-		setLoginAlignment();
-		setLoginHandler();
+		initPage();
+		setAlignment();
+		setHandler();
 		
 	}
 	
-	private void initLogin() {
+	@Override
+	public void initPage() {
 		
 		layoutBp = new BorderPane();
 		navbarBp = new BorderPane();
@@ -77,7 +79,8 @@ public class LoginPage {
 		
 	}
 	
-	private void setLoginAlignment() {
+	@Override
+	public void setAlignment() {
 		
 		navbarBp.setTop(navbar);
 		navbarBp.setCenter(loginBp);
@@ -114,16 +117,18 @@ public class LoginPage {
 		
 	}
 	
-	private void setLoginHandler() {
+	@Override
+	public void setHandler() {
 		
-		loginBtn.setOnAction(this::handleLogin);
+		loginBtn.setOnAction(this::handlePage);
 		
 		loginNavItem.setOnAction(event -> sceneManager.switchToPage("login"));
         registerNavItem.setOnAction(event -> sceneManager.switchToPage("register"));
 		
 	}
 	
-	private void handleLogin(ActionEvent e) {
+	@Override
+	public void handlePage(ActionEvent e) {
 		
 		if(e.getSource() == loginBtn) {
 					
@@ -143,8 +148,9 @@ public class LoginPage {
 		}
 		
 	}
-	
-	public Scene createLoginScene() {
+
+	@Override
+	public Scene createPageScene() {
 		
 		return new Scene(layoutBp, width, height);
 		

@@ -13,8 +13,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import model.Page;
 
-public class RegisterPage {
+public class RegisterPage extends Page{
 
 	private SceneManager sceneManager;
 	private Rectangle2D screen = Screen.getPrimary().getVisualBounds();
@@ -39,13 +40,14 @@ public class RegisterPage {
 	public RegisterPage(Stage stage) {
 	    
 		sceneManager = new SceneManager(stage);
-		initRegister();
-		setRegisterAlignment();
-		setRegisterHandler();
+		initPage();
+		setAlignment();
+		setHandler();
 		
 	}
 	
-	public void initRegister() {
+	@Override
+	public void initPage() {
 		
 		layoutBp = new BorderPane();
 		navbarBp = new BorderPane();
@@ -91,7 +93,8 @@ public class RegisterPage {
 		registerBtn = new Button("Register");
 	}
 	
-	public void setRegisterAlignment() {
+	@Override
+	public void setAlignment() {
 		
 		navbarBp.setTop(navbar);
 		navbarBp.setCenter(registerBp);
@@ -134,16 +137,18 @@ public class RegisterPage {
 	    BorderPane.setAlignment(bottomLayout, Pos.CENTER);
 	}
 	
-	public void setRegisterHandler() {
+	@Override
+	public void setHandler() {
 
-		registerBtn.setOnAction(this::handleRegister);
+		registerBtn.setOnAction(this::handlePage);
 		
 		loginNavItem.setOnAction(event -> sceneManager.switchToPage("login"));
         registerNavItem.setOnAction(event -> sceneManager.switchToPage("register"));
 		
 	}
 	
-	public void handleRegister(ActionEvent e) {
+	@Override
+	public void handlePage(ActionEvent e) {
 		
 		if(e.getSource() == registerBtn) {
 			
@@ -172,7 +177,8 @@ public class RegisterPage {
 		
 	}
 	
-	public Scene createRegisterScene() {
+	@Override
+	public Scene createPageScene() {
      	
 		return new Scene(layoutBp, width, height);
 		

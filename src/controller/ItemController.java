@@ -32,7 +32,7 @@ public class ItemController {
 	
 	public static ArrayList<Item> viewItem() {
 		
-		String query = "SELECT * FROM Item";
+		String query = "SELECT * FROM Item WHERE Item_status LIKE 'Approved'";
 		ArrayList<Item> items = new ArrayList<>();
 		con.res = con.execQuery(query);
 		try {
