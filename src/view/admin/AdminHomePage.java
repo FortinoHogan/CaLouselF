@@ -1,28 +1,24 @@
-package view.seller;
+package view.admin;
 
 import java.util.ArrayList;
 
 import client.SceneManager;
 import controller.ItemController;
-import controller.UserController;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.Item;
 import model.Page;
 
-public class SellerHomePage extends Page{
+public class AdminHomePage extends Page{
 
 	private SceneManager sceneManager;
 	private Rectangle2D screen = Screen.getPrimary().getVisualBounds();
@@ -35,18 +31,14 @@ public class SellerHomePage extends Page{
 	
 	private MenuBar navbar;
 	private Menu menu;
-	private MenuItem uploadNavItem, homeNavItem, myItemNavItem, offerItemNavItem;
+	private MenuItem viewRequestedItemNavItem;
 	
 	private Label titleLbl, errorLbl;
-	private Button editBtn;
 	
 	private TableView<Item> table;
 	
-	private String userId;
-	
-	public SellerHomePage(Stage stage, String userId) {
+	public AdminHomePage(Stage stage) {
 		
-		this.userId = userId;	
 		sceneManager = new SceneManager(stage);
 		initPage();
 		initTable();
@@ -68,24 +60,19 @@ public class SellerHomePage extends Page{
 		
 		navbar = new MenuBar();
 		menu = new Menu("Action");
-		homeNavItem = new MenuItem("Home");
-		uploadNavItem = new MenuItem("Upload");
-		myItemNavItem = new MenuItem("My Item");
-		offerItemNavItem = new MenuItem("Offer Item");
+		viewRequestedItemNavItem = new MenuItem("Requested Item");
 		navbar.getMenus().add(menu);
-		menu.getItems().addAll(homeNavItem, uploadNavItem, myItemNavItem, offerItemNavItem);
+		menu.getItems().addAll(viewRequestedItemNavItem);
 		
-		titleLbl = new Label("Home Page - Seller");
+		titleLbl = new Label("Home Page - Admin");
 		titleLbl.setFont(new Font(24));
 		errorLbl = new Label("");
 		
 		table = new TableView<Item>();
 		
-		editBtn = new Button("Edit");
-		
 	}
 	
-	public void initTable() {
+	private void initTable() {
 		
 		TableColumn<Item, String>  nameCol = new TableColumn<Item, String>("Name");
 		nameCol.setCellValueFactory(new PropertyValueFactory<Item, String>("itemName"));
@@ -127,15 +114,13 @@ public class SellerHomePage extends Page{
 		
 		table.setMaxWidth(width/1.065);
 		table.setMaxHeight(height/2);
-	
+		
 	}
 	
 	@Override
 	public void setHandler() {
 		
-		homeNavItem.setOnAction(event -> sceneManager.switchToPageSeller("seller-homepage", userId));
-		uploadNavItem.setOnAction(event -> sceneManager.switchToPageSeller("upload-item", userId));
-		myItemNavItem.setOnAction(event -> sceneManager.switchToPageSeller("seller-item-page", userId));
+		viewRequestedItemNavItem.setOnAction(event -> sceneManager.switchToPage("requested-item-page"));
 		
 	}
 
@@ -150,6 +135,5 @@ public class SellerHomePage extends Page{
 		return new Scene(layoutBp, width, height);
 		
     }
-	
-	
+
 }

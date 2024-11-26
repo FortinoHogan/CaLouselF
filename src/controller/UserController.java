@@ -11,7 +11,7 @@ public class UserController {
 
 	public static String login(String username, String password) {
 		
-		if(username.equals("admin") && password.equals("admin")) return "";
+		if(username.equals("admin") && password.equals("admin")) return "admin";
 		
 		if (username.isEmpty()) {
             return "Username cannot be empty";

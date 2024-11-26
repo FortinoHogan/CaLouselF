@@ -7,7 +7,13 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -15,9 +21,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import model.Item;
 import model.Page;
 
-public class UploadItemPage extends Page{
+public class EditItemPage extends Page{
 
 	private SceneManager sceneManager;
 	private Rectangle2D screen = Screen.getPrimary().getVisualBounds();
@@ -32,22 +39,24 @@ public class UploadItemPage extends Page{
 	private Menu menu;
 	private MenuItem uploadNavItem, homeNavItem, myItemNavItem, offerItemNavItem;
 	
-	private Label nameLbl, categoryLbl, sizeLbl, priceLbl, titleLbl, validateLbl;
+	private Label titleLbl, errorLbl, nameLbl, categoryLbl, sizeLbl, priceLbl;
 	private TextField nameTxt, categoryTxt, sizeTxt, priceTxt;
-	private Button uploadBtn;
+	private Button submitBtn;
 	
+	private Item item;
 	private String userId;
 	
-	public UploadItemPage(Stage stage, String userId) {
+	public EditItemPage(Stage stage, Item item, String userId) {
 		
-		this.userId = userId;
 		sceneManager = new SceneManager(stage);
+		this.item = item;
+		this.userId = userId;
 		initPage();
 		setAlignment();
 		setHandler();
 		
 	}
-	
+
 	@Override
 	public void initPage() {
 		
@@ -68,25 +77,24 @@ public class UploadItemPage extends Page{
 		navbar.getMenus().add(menu);
 		menu.getItems().addAll(homeNavItem, uploadNavItem, myItemNavItem, offerItemNavItem);
 		
-		titleLbl = new Label("Upload Item");
+		titleLbl = new Label("Edit Item");
 		titleLbl.setFont(new Font(24));
 		nameLbl = new Label("Item Name");
 		categoryLbl = new Label("Item Category");
 		sizeLbl = new Label("Item Size");
 		priceLbl = new Label("Item Price");
-		validateLbl = new Label("");
+		errorLbl = new Label("");
 		
-		nameTxt = new TextField();
+		nameTxt = new TextField(item.getItemName());
 		nameTxt.setPromptText("Must be filled and at least 3 characters long");
-		categoryTxt = new TextField();
+		categoryTxt = new TextField(item.getItemCategory());
 		categoryTxt.setPromptText("Must be filled and at least 3 characters long");
-		sizeTxt = new TextField();
+		sizeTxt = new TextField(item.getItemSize());
 		sizeTxt.setPromptText("Must be filled");
-		priceTxt = new TextField();
+		priceTxt = new TextField(item.getItemPrice());
 		priceTxt.setPromptText("Must be filled with numbers and cannot be 0");
 		
-		uploadBtn = new Button("Upload");
-		
+		submitBtn = new Button("Submit");
 	}
 
 	@Override
@@ -112,7 +120,7 @@ public class UploadItemPage extends Page{
 	    gp.add(sizeTxt, 1, 2);
 	    gp.add(priceLbl, 0, 3);
 	    gp.add(priceTxt, 1, 3);
-	    gp.add(uploadBtn, 1, 4);
+	    gp.add(submitBtn, 1, 4);
 	    
 	    gp.setVgap(height / 40);
 		gp.setHgap(width / 77);
@@ -120,7 +128,7 @@ public class UploadItemPage extends Page{
 		
 		VBox bottomLayout = new VBox(height/17.5);
 	    bottomLayout.setAlignment(Pos.CENTER);
-	    bottomLayout.getChildren().addAll(validateLbl, uploadBtn);
+	    bottomLayout.getChildren().addAll(errorLbl, submitBtn);
 	    
 	    bottomBp.setCenter(bottomLayout);
 	    bottomBp.setPadding(new Insets(height/17.54, width/15.36, height/17.54, width/15.36));
@@ -130,22 +138,22 @@ public class UploadItemPage extends Page{
 		titleBp.setPadding(new Insets(height/17.54, width/30.72, height/17.54, width/30.72));
 		
 	}
-	
+
 	@Override
 	public void setHandler() {
 		
-		uploadBtn.setOnAction(this::handlePage);
-		
+		submitBtn.setOnAction(this::handlePage);
+
 		homeNavItem.setOnAction(event -> sceneManager.switchToPageSeller("seller-homepage", userId));
 		uploadNavItem.setOnAction(event -> sceneManager.switchToPageSeller("upload-item", userId));
 		myItemNavItem.setOnAction(event -> sceneManager.switchToPageSeller("seller-item-page", userId));
 		
 	}
-	
+
 	@Override
 	public void handlePage(ActionEvent e) {
 		
-		if(e.getSource() == uploadBtn) {
+		if(e.getSource() == submitBtn) {
 			
 			String name = nameTxt.getText().trim();
 			String category = categoryTxt.getText().trim();
@@ -154,27 +162,23 @@ public class UploadItemPage extends Page{
 			
 			String errorMsg = ItemController.checkItemValidation(name, category, size, price);
 			if(errorMsg.equals("")) {
-				ItemController.uploadItem(name, category, size, price);
-				validateLbl.setText("Item Uploaded");
-	            validateLbl.setTextFill(Color.GREEN);
-	            nameTxt.setText("");
-	            categoryTxt.setText("");
-	            sizeTxt.setText("");
-	            priceTxt.setText("");
+				ItemController.editItem(item.getItemId(), name, category, size, price);
+				errorLbl.setText("Item Edited");
+	            errorLbl.setTextFill(Color.GREEN);
 			} else {
-				validateLbl.setText(errorMsg);
-	            validateLbl.setTextFill(Color.RED);
+				errorLbl.setText(errorMsg);
+	            errorLbl.setTextFill(Color.RED);
 			}
 			
 		}
 		
 	}
-	
+
 	@Override
 	public Scene createPageScene() {
-		
+
 		return new Scene(layoutBp, width, height);
 		
 	}
-	
+
 }

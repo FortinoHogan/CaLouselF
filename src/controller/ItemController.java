@@ -20,10 +20,19 @@ public class ItemController {
 	
 	public static void editItem(String itemId, String itemName, String itemCategory, String itemSize, String itemPrice) {
 		
+		String query = String.format("UPDATE Item\n" 
+				+ "SET Item_name = '%s', Item_category = '%s', Item_size = '%s', Item_price = '%s'\n"
+				+ "WHERE Item_id = '%s'", itemName, itemCategory, itemSize, itemPrice, itemId);
+		
+		con.execUpdate(query);
+		
 	}
 	
 	public static void deleteItem(String itemId) {
 		
+		String query = String.format("DELETE FROM Item WHERE Item_id = '%s'", itemId);
+
+		con.execUpdate(query);
 	}
 	
 	public static void browseItem(String itemName) {
@@ -149,4 +158,29 @@ public class ItemController {
 		
 	}
 	
+	public static ArrayList<Item> getItemsByUserId(String userId){
+		
+		String query = String.format("SELECT * FROM Item WHERE Item_status LIKE 'Approved' AND User_id LIKE '%s'", userId);
+		ArrayList<Item> items = new ArrayList<>();
+		con.res = con.execQuery(query);
+		try {
+			while (con.res.next()) {
+			    String itemId = con.res.getString("Item_id");
+			    String itemName= con.res.getString("Item_name");
+			    String itemSize = con.res.getString("Item_size");
+			    String itemPrice = con.res.getString("Item_price");
+			    String itemCategory = con.res.getString("Item_category");
+			    String itemStatus = con.res.getString("Item_status");
+			    String itemWishlist = con.res.getString("Item_wishlist");
+			    String itemOfferStatus = con.res.getString("Item_offer_status");
+			    
+			    items.add(new Item(itemId, itemName, itemSize, itemPrice, itemCategory, itemStatus, itemWishlist, itemOfferStatus));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return items;
+		
+	}
 }

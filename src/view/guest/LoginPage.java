@@ -139,10 +139,16 @@ public class LoginPage extends Page{
 			errorLbl.setText(errorMsg);
             errorLbl.setTextFill(Color.RED);
             
+            if(errorMsg.equals("admin")) {
+            	sceneManager.switchToPage("admin-homepage");
+            }
+            
             if(errorMsg.equals("")) {
             	User user = UserController.getUserByUsername(username);
-            	if(user.getRole().equals("Buyer")) sceneManager.switchToPage("buyer-homepage");
-            	else if(user.getRole().equals("Seller")) sceneManager.switchToPage("seller-homepage");
+            	if(user.getRole().equals("Buyer")) {
+            		sceneManager.switchToPageBuyer("buyer-homepage", user.getUserId());
+            	}
+            	else if(user.getRole().equals("Seller")) sceneManager.switchToPageSeller("seller-homepage", user.getUserId());
             }
 			
 		}

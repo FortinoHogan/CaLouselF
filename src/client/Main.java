@@ -17,7 +17,7 @@ public class Main extends Application {
 	public void start(Stage pS) throws Exception {
 		
 		sceneManager = new SceneManager(pS);
-		sceneManager.switchToPage("register");
+		sceneManager.switchToPage("login");
 		
 		pS.setTitle("CaLouselF");
 		pS.show();
