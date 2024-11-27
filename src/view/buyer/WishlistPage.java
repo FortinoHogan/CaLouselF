@@ -174,7 +174,7 @@ public class WishlistPage extends Page{
 			if (e.getSource() == removeBtn) {
 				WishlistController.removeWishlist(wishlist.getWishlistId());
 				refreshTable();
-				errorLbl.setText("Item Deleted");
+				errorLbl.setText("Item Removed From Wishlist");
 				errorLbl.setTextFill(Color.GREEN);
 			}
 		} else if(wishlist == null) {

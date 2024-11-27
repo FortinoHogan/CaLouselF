@@ -3,7 +3,9 @@ package controller;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import model.Item;
 import model.Transaction;
+import model.TransactionHistory;
 import util.Connect;
 
 public class TransactionController {
@@ -18,9 +20,28 @@ public class TransactionController {
 		
 	}
 	
-	public static ArrayList<Transaction> viewHistory(String userId){
+	public static ArrayList<TransactionHistory> viewHistory(String userId){
 		
-		return null;
+		String query = String.format("SELECT t.Transaction_id, i.Item_name, i.Item_Category, i.Item_size, i.Item_price FROM Transaction t \n"
+				+ "JOIN Item i ON i.Item_id = t.Item_id WHERE t.User_id LIKE '%s'", userId);
+		ArrayList<TransactionHistory> history = new ArrayList<>();
+		con.res = con.execQuery(query);
+		try {
+			while (con.res.next()) {
+				String transactionId = con.res.getString("Transaction_id");
+				String itemName = con.res.getString("Item_name");
+				String itemSize = con.res.getString("Item_size");
+				String itemPrice = con.res.getString("Item_price");
+				String itemCategory = con.res.getString("Item_category");
+				
+				history.add(new TransactionHistory(transactionId, itemName, itemCategory, itemSize, itemPrice));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		
+		return history;
 		
 	}
 	

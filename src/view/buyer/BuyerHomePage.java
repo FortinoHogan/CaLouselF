@@ -16,6 +16,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -156,9 +157,12 @@ public class BuyerHomePage extends Page{
 		purchaseConfirmationBp.setCenter(fp);
 		purchaseConfirmationBp.setStyle(" -fx-background-color: gray;");
 		
-		VBox bottomLayout = new VBox(height/17.5);
-	    bottomLayout.setAlignment(Pos.CENTER);
-	    bottomLayout.getChildren().addAll(errorLbl, buyBtn, addToWishlistBtn);
+		VBox bottomLayout = new VBox(height / 17.5);
+		HBox buttonLayout = new HBox(width / 20);
+		bottomLayout.setAlignment(Pos.CENTER);
+		buttonLayout.setAlignment(Pos.CENTER);
+		bottomLayout.getChildren().addAll(errorLbl, buttonLayout);
+		buttonLayout.getChildren().addAll(buyBtn, addToWishlistBtn);
 	    
 		bottomBp.setCenter(bottomLayout);
 		bottomBp.setPadding(new Insets(height / 17.54, width / 15.36, height / 17.54, width / 15.36));

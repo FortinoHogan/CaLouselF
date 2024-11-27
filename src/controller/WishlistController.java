@@ -2,9 +2,6 @@ package controller;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import model.Item;
-import model.Wishlist;
 import model.WishlistItem;
 import util.Connect;
 

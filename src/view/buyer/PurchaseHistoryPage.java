@@ -23,6 +23,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.Item;
 import model.Page;
+import model.TransactionHistory;
 
 public class PurchaseHistoryPage extends Page{
 	private SceneManager sceneManager;
@@ -40,7 +41,7 @@ public class PurchaseHistoryPage extends Page{
 	
 	private Label titleLbl, errorLbl;
 	
-	private TableView<Item> table;
+	private TableView<TransactionHistory> table;
 	
 	private String userId;
 	
@@ -78,36 +79,37 @@ public class PurchaseHistoryPage extends Page{
 		titleLbl.setFont(new Font(24));
 		errorLbl = new Label("");
 		
-		table = new TableView<Item>();
+		table = new TableView<TransactionHistory>();
 	}
 	
 	public void initTable() {
-		
-		TableColumn<Item, String>  nameCol = new TableColumn<Item, String>("Name");
-		nameCol.setCellValueFactory(new PropertyValueFactory<Item, String>("itemName"));
-		nameCol.setMinWidth((width/1.065)/4);
-		
-		TableColumn<Item, String>  categoryCol = new TableColumn<Item, String>("Category");
-		categoryCol.setCellValueFactory(new PropertyValueFactory<Item, String>("itemCategory"));
-		categoryCol.setMinWidth((width/1.065)/4);
-		
-		TableColumn<Item, String>  sizeCol = new TableColumn<Item, String>("Size");
-		sizeCol.setCellValueFactory(new PropertyValueFactory<Item, String>("itemSize"));
-		sizeCol.setMinWidth((width/1.065)/4);
-		
-		TableColumn<Item, String>  priceCol = new TableColumn<Item, String>("Price");
-		priceCol.setCellValueFactory(new PropertyValueFactory<Item, String>("itemPrice"));
-		priceCol.setMinWidth((width/1.065)/4);
-		
-		table.getColumns().addAll(nameCol, categoryCol, sizeCol, priceCol);
-		
-		ArrayList<Item> items = ItemController.viewItem();
-		
-		for(Item item : items) {
-			table.getItems().add(item);
-		}
-		
+
+	    TableColumn<TransactionHistory, String> transactionIdCol = new TableColumn<>("Transaction ID");
+	    transactionIdCol.setCellValueFactory(new PropertyValueFactory<>("transactionId"));
+	    transactionIdCol.setMinWidth((width / 1.065) / 5);
+
+	    TableColumn<TransactionHistory, String> nameCol = new TableColumn<>("Name");
+	    nameCol.setCellValueFactory(new PropertyValueFactory<>("itemName"));
+	    nameCol.setMinWidth((width / 1.065) / 5);
+
+	    TableColumn<TransactionHistory, String> categoryCol = new TableColumn<>("Category");
+	    categoryCol.setCellValueFactory(new PropertyValueFactory<>("itemCategory"));
+	    categoryCol.setMinWidth((width / 1.065) / 5);
+
+	    TableColumn<TransactionHistory, String> sizeCol = new TableColumn<>("Size");
+	    sizeCol.setCellValueFactory(new PropertyValueFactory<>("itemSize"));
+	    sizeCol.setMinWidth((width / 1.065) / 5);
+
+	    TableColumn<TransactionHistory, String> priceCol = new TableColumn<>("Price");
+	    priceCol.setCellValueFactory(new PropertyValueFactory<>("itemPrice"));
+	    priceCol.setMinWidth((width / 1.065) / 5);
+
+	    table.getColumns().addAll(transactionIdCol, nameCol, categoryCol, sizeCol, priceCol);
+
+	    ArrayList<TransactionHistory> items = TransactionController.viewHistory(userId);
+	    table.getItems().addAll(items);
 	}
+
 	
 	@Override
 	public void setAlignment() {
