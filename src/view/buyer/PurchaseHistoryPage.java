@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import client.SceneManager;
 import controller.ItemController;
 import controller.TransactionController;
-import controller.WishlistController;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -25,37 +24,30 @@ import javafx.stage.Stage;
 import model.Item;
 import model.Page;
 
-public class BuyerHomePage extends Page{
-
+public class PurchaseHistoryPage extends Page{
 	private SceneManager sceneManager;
-	private Stage stage;
 	private Rectangle2D screen = Screen.getPrimary().getVisualBounds();
 	private double width = screen.getWidth() * 0.80;
 	private double height = screen.getHeight() * 0.85;
 	
-	private BorderPane layoutBp, navbarBp, titleBp, bottomBp, purchaseConfirmationBp;
+	private BorderPane layoutBp, navbarBp, titleBp, bottomBp;
 	private GridPane gp;
 	private ScrollPane sp;
-	private FlowPane fp;
 	
 	private MenuBar navbar;
 	private Menu menu;
 	private MenuItem homeNavItem, wishlistNavItem, historyNavItem;
-
-	private Label titleLbl, errorLbl, confirmLbl;
-	private Button offerBtn, confirmBtn, cancelBtn, buyBtn, addToWishlistBtn;
 	
-	private TableView<Item> table;	
+	private Label titleLbl, errorLbl;
 	
-	private Popup purchaseConfirmation;
+	private TableView<Item> table;
 	
 	private String userId;
 	
-	public BuyerHomePage(Stage stage, String userId) {
+	public PurchaseHistoryPage(Stage stage, String userId) {
 		
+		this.userId = userId;	
 		sceneManager = new SceneManager(stage);
-		this.userId = userId;
-		this.stage = stage;
 		initPage();
 		initTable();
 		setAlignment();
@@ -70,11 +62,9 @@ public class BuyerHomePage extends Page{
 		navbarBp = new BorderPane();
 		titleBp = new BorderPane();
 		bottomBp = new BorderPane();
-		purchaseConfirmationBp = new BorderPane();
 		
 		gp = new GridPane();
 		sp = new ScrollPane();
-		fp = new FlowPane();
 		
 		navbar = new MenuBar();
 		menu = new Menu("Action");
@@ -84,21 +74,11 @@ public class BuyerHomePage extends Page{
 		navbar.getMenus().add(menu);
 		menu.getItems().addAll(homeNavItem, wishlistNavItem, historyNavItem);
 		
-		titleLbl = new Label("Home Page - Buyer");
+		titleLbl = new Label("Purchase History");
 		titleLbl.setFont(new Font(24));
 		errorLbl = new Label("");
-		confirmLbl = new Label("Are you sure want to purchase this item?");
-		confirmLbl.setFont(new Font(18));
-		
-		offerBtn = new Button("Make Offer");
-		confirmBtn = new Button("Confirm");
-		cancelBtn = new Button("Cancel");
-		buyBtn = new Button("Buy");
-		addToWishlistBtn = new Button("Add to wishlist");
 		
 		table = new TableView<Item>();
-		
-		purchaseConfirmation = new Popup();
 	}
 	
 	public void initTable() {
@@ -143,43 +123,11 @@ public class BuyerHomePage extends Page{
 		
 		table.setMaxWidth(width/1.065);
 		table.setMaxHeight(height/2);
-		
-		fp.getChildren().add(confirmBtn);
-		fp.getChildren().add(cancelBtn);
-		fp.setHgap(20);
-		
-		purchaseConfirmationBp.setMinWidth(width/30);
-		purchaseConfirmationBp.setMinHeight(height/15);
-		purchaseConfirmation.getContent().add(purchaseConfirmationBp);
-		
-		purchaseConfirmationBp.setTop(confirmLbl);
-		purchaseConfirmationBp.setCenter(fp);
-		purchaseConfirmationBp.setStyle(" -fx-background-color: gray;");
-		
-		VBox bottomLayout = new VBox(height/17.5);
-	    bottomLayout.setAlignment(Pos.CENTER);
-	    bottomLayout.getChildren().addAll(errorLbl, buyBtn, addToWishlistBtn);
-	    
-		bottomBp.setCenter(bottomLayout);
-		bottomBp.setPadding(new Insets(height / 17.54, width / 15.36, height / 17.54, width / 15.36));
-		
-		confirmLbl.setStyle("-fx-text-fill: white;");
-		fp.setAlignment(Pos.CENTER);
-		BorderPane.setAlignment(buyBtn, Pos.CENTER);
-		BorderPane.setAlignment(confirmLbl, Pos.CENTER);
-		BorderPane.setAlignment(purchaseConfirmationBp, Pos.CENTER);
-		BorderPane.setMargin(confirmLbl, new Insets(0,0,20,0));
-		purchaseConfirmationBp.setPadding(new Insets(20));
-		
+	
 	}
-		
+	
 	@Override
 	public void setHandler() {
-		
-		addToWishlistBtn.setOnAction(this::handlePage);
-		buyBtn.setOnAction(this::handlePage);
-		confirmBtn.setOnAction(this::handlePage);
-		cancelBtn.setOnAction(this::handlePage);
 		
 		homeNavItem.setOnAction(event -> sceneManager.switchToPageBuyer("buyer-homepage", userId));
 		wishlistNavItem.setOnAction(event -> sceneManager.switchToPageBuyer("wishlist-page", userId));
@@ -187,34 +135,9 @@ public class BuyerHomePage extends Page{
 		
 	}
 
-
 	@Override
 	public void handlePage(ActionEvent e) {
 		
-		Item item = null;
-		TableSelectionModel<Item> tsm = table.getSelectionModel();
-		tsm.setSelectionMode(SelectionMode.SINGLE);
-		item = tsm.getSelectedItem();
-		
-		if(item != null) {
-			if(e.getSource() == addToWishlistBtn) {
-				WishlistController.addWishlist(item.getItemId(), userId);
-				errorLbl.setText("Added to wishlist");
-				errorLbl.setTextFill(Color.GREEN);
-			} else if(e.getSource() == buyBtn) {
-				purchaseConfirmation.show(stage);
-			} else if (e.getSource() == confirmBtn) {
-				TransactionController.purchaseItem(userId, item.getItemId());
-				errorLbl.setText("Purchase Success");
-				errorLbl.setTextFill(Color.GREEN);
-				purchaseConfirmation.hide();
-			} else if (e.getSource() == cancelBtn) {
-				purchaseConfirmation.hide();
-			}
-		} else if(item == null) {
-			errorLbl.setText("Item Not Selected");
-			errorLbl.setTextFill(Color.RED);
-		}
 	}
 	
 	@Override
@@ -223,5 +146,6 @@ public class BuyerHomePage extends Page{
 		return new Scene(layoutBp, width, height);
 		
     }
+	
 	
 }

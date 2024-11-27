@@ -24,38 +24,35 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.Item;
 import model.Page;
+import model.Wishlist;
+import model.WishlistItem;
 
-public class BuyerHomePage extends Page{
-
+public class WishlistPage extends Page{
 	private SceneManager sceneManager;
 	private Stage stage;
 	private Rectangle2D screen = Screen.getPrimary().getVisualBounds();
 	private double width = screen.getWidth() * 0.80;
 	private double height = screen.getHeight() * 0.85;
 	
-	private BorderPane layoutBp, navbarBp, titleBp, bottomBp, purchaseConfirmationBp;
+	private BorderPane layoutBp, navbarBp, titleBp, bottomBp;
 	private GridPane gp;
 	private ScrollPane sp;
-	private FlowPane fp;
 	
 	private MenuBar navbar;
 	private Menu menu;
 	private MenuItem homeNavItem, wishlistNavItem, historyNavItem;
 
-	private Label titleLbl, errorLbl, confirmLbl;
-	private Button offerBtn, confirmBtn, cancelBtn, buyBtn, addToWishlistBtn;
+	private Label titleLbl, errorLbl;
+	private Button removeBtn;
 	
-	private TableView<Item> table;	
-	
-	private Popup purchaseConfirmation;
+	private TableView<WishlistItem> table;	
 	
 	private String userId;
 	
-	public BuyerHomePage(Stage stage, String userId) {
+	public WishlistPage(Stage stage, String userId) {
 		
 		sceneManager = new SceneManager(stage);
 		this.userId = userId;
-		this.stage = stage;
 		initPage();
 		initTable();
 		setAlignment();
@@ -70,11 +67,9 @@ public class BuyerHomePage extends Page{
 		navbarBp = new BorderPane();
 		titleBp = new BorderPane();
 		bottomBp = new BorderPane();
-		purchaseConfirmationBp = new BorderPane();
 		
 		gp = new GridPane();
 		sp = new ScrollPane();
-		fp = new FlowPane();
 		
 		navbar = new MenuBar();
 		menu = new Menu("Action");
@@ -84,49 +79,52 @@ public class BuyerHomePage extends Page{
 		navbar.getMenus().add(menu);
 		menu.getItems().addAll(homeNavItem, wishlistNavItem, historyNavItem);
 		
-		titleLbl = new Label("Home Page - Buyer");
+		titleLbl = new Label("Wishlist");
 		titleLbl.setFont(new Font(24));
 		errorLbl = new Label("");
-		confirmLbl = new Label("Are you sure want to purchase this item?");
-		confirmLbl.setFont(new Font(18));
 		
-		offerBtn = new Button("Make Offer");
-		confirmBtn = new Button("Confirm");
-		cancelBtn = new Button("Cancel");
-		buyBtn = new Button("Buy");
-		addToWishlistBtn = new Button("Add to wishlist");
+		removeBtn = new Button("Remove form wishlist");
 		
-		table = new TableView<Item>();
-		
-		purchaseConfirmation = new Popup();
+		table = new TableView<WishlistItem>();
 	}
 	
 	public void initTable() {
 		
-		TableColumn<Item, String>  nameCol = new TableColumn<Item, String>("Name");
-		nameCol.setCellValueFactory(new PropertyValueFactory<Item, String>("itemName"));
+		TableColumn<WishlistItem, String>  nameCol = new TableColumn<WishlistItem, String>("Name");
+		nameCol.setCellValueFactory(new PropertyValueFactory<WishlistItem, String>("itemName"));
 		nameCol.setMinWidth((width/1.065)/4);
 		
-		TableColumn<Item, String>  categoryCol = new TableColumn<Item, String>("Category");
-		categoryCol.setCellValueFactory(new PropertyValueFactory<Item, String>("itemCategory"));
+		TableColumn<WishlistItem, String>  categoryCol = new TableColumn<WishlistItem, String>("Category");
+		categoryCol.setCellValueFactory(new PropertyValueFactory<WishlistItem, String>("itemCategory"));
 		categoryCol.setMinWidth((width/1.065)/4);
 		
-		TableColumn<Item, String>  sizeCol = new TableColumn<Item, String>("Size");
-		sizeCol.setCellValueFactory(new PropertyValueFactory<Item, String>("itemSize"));
+		TableColumn<WishlistItem, String>  sizeCol = new TableColumn<WishlistItem, String>("Size");
+		sizeCol.setCellValueFactory(new PropertyValueFactory<WishlistItem, String>("itemSize"));
 		sizeCol.setMinWidth((width/1.065)/4);
 		
-		TableColumn<Item, String>  priceCol = new TableColumn<Item, String>("Price");
-		priceCol.setCellValueFactory(new PropertyValueFactory<Item, String>("itemPrice"));
+		TableColumn<WishlistItem, String>  priceCol = new TableColumn<WishlistItem, String>("Price");
+		priceCol.setCellValueFactory(new PropertyValueFactory<WishlistItem, String>("itemPrice"));
 		priceCol.setMinWidth((width/1.065)/4);
-		
+
 		table.getColumns().addAll(nameCol, categoryCol, sizeCol, priceCol);
+
+        refreshTable();
+	}
+	
+	public void refreshTable() {
+
+		table.getItems().clear();
 		
-		ArrayList<Item> items = ItemController.viewItem();
+		ArrayList<WishlistItem> wishlist = WishlistController.viewWishlist(null, userId);
+//		ArrayList<Item> items = new ArrayList<>();
+//		for (Wishlist wish : wishlist) {
+//			items.add(ItemController.getItemsByItemId(wish.getItemId()));
+//		}
 		
-		for(Item item : items) {
-			table.getItems().add(item);
+		for (WishlistItem wish : wishlist) {
+			table.getItems().add(wish);
 		}
-		
+
 	}
 	
 	@Override
@@ -144,42 +142,18 @@ public class BuyerHomePage extends Page{
 		table.setMaxWidth(width/1.065);
 		table.setMaxHeight(height/2);
 		
-		fp.getChildren().add(confirmBtn);
-		fp.getChildren().add(cancelBtn);
-		fp.setHgap(20);
-		
-		purchaseConfirmationBp.setMinWidth(width/30);
-		purchaseConfirmationBp.setMinHeight(height/15);
-		purchaseConfirmation.getContent().add(purchaseConfirmationBp);
-		
-		purchaseConfirmationBp.setTop(confirmLbl);
-		purchaseConfirmationBp.setCenter(fp);
-		purchaseConfirmationBp.setStyle(" -fx-background-color: gray;");
-		
 		VBox bottomLayout = new VBox(height/17.5);
 	    bottomLayout.setAlignment(Pos.CENTER);
-	    bottomLayout.getChildren().addAll(errorLbl, buyBtn, addToWishlistBtn);
+	    bottomLayout.getChildren().addAll(errorLbl, removeBtn);
 	    
 		bottomBp.setCenter(bottomLayout);
 		bottomBp.setPadding(new Insets(height / 17.54, width / 15.36, height / 17.54, width / 15.36));
-		
-		confirmLbl.setStyle("-fx-text-fill: white;");
-		fp.setAlignment(Pos.CENTER);
-		BorderPane.setAlignment(buyBtn, Pos.CENTER);
-		BorderPane.setAlignment(confirmLbl, Pos.CENTER);
-		BorderPane.setAlignment(purchaseConfirmationBp, Pos.CENTER);
-		BorderPane.setMargin(confirmLbl, new Insets(0,0,20,0));
-		purchaseConfirmationBp.setPadding(new Insets(20));
-		
 	}
 		
 	@Override
 	public void setHandler() {
-		
-		addToWishlistBtn.setOnAction(this::handlePage);
-		buyBtn.setOnAction(this::handlePage);
-		confirmBtn.setOnAction(this::handlePage);
-		cancelBtn.setOnAction(this::handlePage);
+	
+		removeBtn.setOnAction(this::handlePage);
 		
 		homeNavItem.setOnAction(event -> sceneManager.switchToPageBuyer("buyer-homepage", userId));
 		wishlistNavItem.setOnAction(event -> sceneManager.switchToPageBuyer("wishlist-page", userId));
@@ -191,27 +165,19 @@ public class BuyerHomePage extends Page{
 	@Override
 	public void handlePage(ActionEvent e) {
 		
-		Item item = null;
-		TableSelectionModel<Item> tsm = table.getSelectionModel();
+		WishlistItem wishlist = null;
+		TableSelectionModel<WishlistItem> tsm = table.getSelectionModel();
 		tsm.setSelectionMode(SelectionMode.SINGLE);
-		item = tsm.getSelectedItem();
+		wishlist = tsm.getSelectedItem();
 		
-		if(item != null) {
-			if(e.getSource() == addToWishlistBtn) {
-				WishlistController.addWishlist(item.getItemId(), userId);
-				errorLbl.setText("Added to wishlist");
+		if(wishlist != null) {
+			if (e.getSource() == removeBtn) {
+				WishlistController.removeWishlist(wishlist.getWishlistId());
+				refreshTable();
+				errorLbl.setText("Item Deleted");
 				errorLbl.setTextFill(Color.GREEN);
-			} else if(e.getSource() == buyBtn) {
-				purchaseConfirmation.show(stage);
-			} else if (e.getSource() == confirmBtn) {
-				TransactionController.purchaseItem(userId, item.getItemId());
-				errorLbl.setText("Purchase Success");
-				errorLbl.setTextFill(Color.GREEN);
-				purchaseConfirmation.hide();
-			} else if (e.getSource() == cancelBtn) {
-				purchaseConfirmation.hide();
 			}
-		} else if(item == null) {
+		} else if(wishlist == null) {
 			errorLbl.setText("Item Not Selected");
 			errorLbl.setTextFill(Color.RED);
 		}
@@ -223,5 +189,4 @@ public class BuyerHomePage extends Page{
 		return new Scene(layoutBp, width, height);
 		
     }
-	
 }

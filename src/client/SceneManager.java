@@ -71,6 +71,14 @@ public class SceneManager {
 	        	BuyerHomePage buyerHomePage = new BuyerHomePage(primaryStage, userId);
 	        	setScene(buyerHomePage.createPageScene());
 	        	break;
+	    	case "purchase-history-page":
+	        	PurchaseHistoryPage purchaseHistoryPage = new PurchaseHistoryPage(primaryStage, userId);
+	        	setScene(purchaseHistoryPage.createPageScene());
+	        	break;
+	    	case "wishlist-page":
+	        	WishlistPage wishlistPage = new WishlistPage(primaryStage, userId);
+	        	setScene(wishlistPage.createPageScene());
+	        	break;
     	}
     }
 	
