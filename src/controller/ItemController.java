@@ -110,10 +110,18 @@ public class ItemController {
 
 	public static void approveItem(String itemId) {
 
+		String query = String.format("UPDATE Item SET Item_status = 'Approved' WHERE Item_id = '%s'", itemId);
+		
+		con.execUpdate(query);
+		
 	}
 
 	public static void declineItem(String itemId) {
 
+		String query = String.format("DELETE FROM Item WHERE Item_id = '%s'", itemId);
+		
+		con.execUpdate(query);
+		
 	}
 
 	public static void viewAcceptedItem(String itemId) {
@@ -191,30 +199,66 @@ public class ItemController {
 		return items;
 
 	}
+	
+	public static ArrayList<Item> getPendingItems(){
+		
+		String query = "SELECT * FROM Item WHERE Item_status LIKE 'Pending'";
+		ArrayList<Item> items = new ArrayList<>();
+		con.res = con.execQuery(query);
+		try {
+			while (con.res.next()) {
+				String itemId = con.res.getString("Item_id");
+				String itemName = con.res.getString("Item_name");
+				String itemSize = con.res.getString("Item_size");
+				String itemPrice = con.res.getString("Item_price");
+				String itemCategory = con.res.getString("Item_category");
+				String itemStatus = con.res.getString("Item_status");
+				String itemWishlist = con.res.getString("Item_wishlist");
+				String itemOfferStatus = con.res.getString("Item_offer_status");
 
-//	public static Item getItem(String item_Id) {
-//
-//		String query = String.format("SELECT * FROM Item WHERE Item_status LIKE 'Approved' AND Item_id LIKE '%s'",
-//				item_Id);
-//		Item item = null;
-//		con.res = con.execQuery(query);
-//		try {
-//			String itemId = con.res.getString("Item_id");
-//			String itemName = con.res.getString("Item_name");
-//			String itemSize = con.res.getString("Item_size");
-//			String itemPrice = con.res.getString("Item_price");
-//			String itemCategory = con.res.getString("Item_category");
-//			String itemStatus = con.res.getString("Item_status");
-//			String itemWishlist = con.res.getString("Item_wishlist");
-//			String itemOfferStatus = con.res.getString("Item_offer_status");
-//
-//			item = new Item(itemId, itemName, itemSize, itemPrice, itemCategory, itemStatus, itemWishlist,
-//					itemOfferStatus);
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//
-//		return item;
-//
-//	}
+				items.add(new Item(itemId, itemName, itemSize, itemPrice, itemCategory, itemStatus, itemWishlist,
+						itemOfferStatus));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return items;
+		
+	}
+
+	public static Item getItem(String item_Id) {
+
+		String query = String.format("SELECT * FROM Item WHERE Item_id LIKE '%s'", item_Id);
+		Item item = null;
+		con.res = con.execQuery(query);
+		try {
+			String itemId = con.res.getString("Item_id");
+			String itemName = con.res.getString("Item_name");
+			String itemSize = con.res.getString("Item_size");
+			String itemPrice = con.res.getString("Item_price");
+			String itemCategory = con.res.getString("Item_category");
+			String itemStatus = con.res.getString("Item_status");
+			String itemWishlist = con.res.getString("Item_wishlist");
+			String itemOfferStatus = con.res.getString("Item_offer_status");
+
+			item = new Item(itemId, itemName, itemSize, itemPrice, itemCategory, itemStatus, itemWishlist,
+					itemOfferStatus);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return item;
+
+	}
+	
+	public static String validateDecline(String reason) {
+		
+		if(reason.isEmpty()) {
+			return "Reason cannot be empty";
+		} else {
+			return "";
+		}
+		
+	}
 }

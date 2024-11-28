@@ -18,7 +18,6 @@ public class UserController {
 		} else if (password.isEmpty()) {
 			return "Password cannot be empty";
 		} else if (!validateLogin(username, password)) {
-			System.out.println(validateLogin(username, password));
 			return "Wrong credential";
 		} else {
 			return "";

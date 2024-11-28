@@ -31,7 +31,7 @@ public class AdminHomePage extends Page{
 	
 	private MenuBar navbar;
 	private Menu menu;
-	private MenuItem viewRequestedItemNavItem;
+	private MenuItem homeNavItem, viewRequestedItemNavItem;
 	
 	private Label titleLbl, errorLbl;
 	
@@ -60,9 +60,10 @@ public class AdminHomePage extends Page{
 		
 		navbar = new MenuBar();
 		menu = new Menu("Action");
+		homeNavItem = new MenuItem("Home");
 		viewRequestedItemNavItem = new MenuItem("Requested Item");
 		navbar.getMenus().add(menu);
-		menu.getItems().addAll(viewRequestedItemNavItem);
+		menu.getItems().addAll(homeNavItem, viewRequestedItemNavItem);
 		
 		titleLbl = new Label("Home Page - Admin");
 		titleLbl.setFont(new Font(24));
@@ -120,6 +121,7 @@ public class AdminHomePage extends Page{
 	@Override
 	public void setHandler() {
 		
+		homeNavItem.setOnAction(event -> sceneManager.switchToPage("admin-homepage"));
 		viewRequestedItemNavItem.setOnAction(event -> sceneManager.switchToPage("requested-item-page"));
 		
 	}
