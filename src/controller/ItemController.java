@@ -92,8 +92,29 @@ public class ItemController {
 
 	}
 
-	public static void viewRequestedItem(String itemId, String itemStatus) {
+	public static Item viewRequestedItem(String _itemId, String _itemStatus) {
 
+		String query = String.format("SELECT * FROM Item WHERE Item_id LIKE '%s'", _itemId);
+		Item item = null;
+		con.res = con.execQuery(query);
+		try {
+			String itemId = con.res.getString("Item_id");
+			String itemName = con.res.getString("Item_name");
+			String itemSize = con.res.getString("Item_size");
+			String itemPrice = con.res.getString("Item_price");
+			String itemCategory = con.res.getString("Item_category");
+			String itemStatus = con.res.getString("Item_status");
+			String itemWishlist = con.res.getString("Item_wishlist");
+			String itemOfferStatus = con.res.getString("Item_offer_status");
+
+			item = new Item(itemId, itemName, itemSize, itemPrice, itemCategory, itemStatus, itemWishlist,
+					itemOfferStatus);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return item;
+		
 	}
 
 	public static void offerPrice(String itemId, String itemPrice) {
@@ -124,7 +145,28 @@ public class ItemController {
 		
 	}
 
-	public static void viewAcceptedItem(String itemId) {
+	public static Item viewAcceptedItem(String _itemId) {
+		
+		String query = String.format("SELECT * FROM Item WHERE Item_id LIKE '%s'", _itemId);
+		Item item = null;
+		con.res = con.execQuery(query);
+		try {
+			String itemId = con.res.getString("Item_id");
+			String itemName = con.res.getString("Item_name");
+			String itemSize = con.res.getString("Item_size");
+			String itemPrice = con.res.getString("Item_price");
+			String itemCategory = con.res.getString("Item_category");
+			String itemStatus = con.res.getString("Item_status");
+			String itemWishlist = con.res.getString("Item_wishlist");
+			String itemOfferStatus = con.res.getString("Item_offer_status");
+
+			item = new Item(itemId, itemName, itemSize, itemPrice, itemCategory, itemStatus, itemWishlist,
+					itemOfferStatus);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return item;
 
 	}
 
@@ -225,31 +267,6 @@ public class ItemController {
 
 		return items;
 		
-	}
-
-	public static Item getItem(String item_Id) {
-
-		String query = String.format("SELECT * FROM Item WHERE Item_id LIKE '%s'", item_Id);
-		Item item = null;
-		con.res = con.execQuery(query);
-		try {
-			String itemId = con.res.getString("Item_id");
-			String itemName = con.res.getString("Item_name");
-			String itemSize = con.res.getString("Item_size");
-			String itemPrice = con.res.getString("Item_price");
-			String itemCategory = con.res.getString("Item_category");
-			String itemStatus = con.res.getString("Item_status");
-			String itemWishlist = con.res.getString("Item_wishlist");
-			String itemOfferStatus = con.res.getString("Item_offer_status");
-
-			item = new Item(itemId, itemName, itemSize, itemPrice, itemCategory, itemStatus, itemWishlist,
-					itemOfferStatus);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return item;
-
 	}
 	
 	public static String validateDecline(String reason) {

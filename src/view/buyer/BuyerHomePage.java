@@ -34,7 +34,7 @@ public class BuyerHomePage extends Page{
 	private double width = screen.getWidth() * 0.80;
 	private double height = screen.getHeight() * 0.85;
 	
-	private BorderPane layoutBp, navbarBp, titleBp, bottomBp, purchaseConfirmationBp;
+	private BorderPane layoutBp, navbarBp, titleBp, bottomBp, purchaseConfirmationBp, detailBp;
 	private GridPane gp;
 	private ScrollPane sp;
 	private FlowPane fp;
@@ -43,12 +43,13 @@ public class BuyerHomePage extends Page{
 	private Menu menu;
 	private MenuItem homeNavItem, wishlistNavItem, historyNavItem;
 
-	private Label titleLbl, errorLbl, confirmLbl;
-	private Button offerBtn, confirmBtn, cancelBtn, buyBtn, addToWishlistBtn;
+	private Label titleLbl, errorLbl, confirmLbl, nameLbl, priceLbl, categoryLbl, sizeLbl, nameTxtLbl, priceTxtLbl, categoryTxtLbl, sizeTxtLbl;
+	private Button offerBtn, confirmBtn, cancelBtn, buyBtn, addToWishlistBtn, confirmDetailBtn, cancelDetailBtn;
 	
 	private TableView<Item> table;	
+	private Item detail;
 	
-	private Popup purchaseConfirmation;
+	private Popup purchaseConfirmation, detailPopup;
 	
 	private String userId;
 	
@@ -72,6 +73,7 @@ public class BuyerHomePage extends Page{
 		titleBp = new BorderPane();
 		bottomBp = new BorderPane();
 		purchaseConfirmationBp = new BorderPane();
+		detailBp = new BorderPane();
 		
 		gp = new GridPane();
 		sp = new ScrollPane();
@@ -90,16 +92,27 @@ public class BuyerHomePage extends Page{
 		errorLbl = new Label("");
 		confirmLbl = new Label("Are you sure want to purchase this item?");
 		confirmLbl.setFont(new Font(18));
+		nameLbl = new Label("Item Name");
+		priceLbl = new Label("Item Price");
+		categoryLbl = new Label("Item Category");
+		sizeLbl = new Label("Item Size");
+		nameTxtLbl = new Label("");
+		priceTxtLbl = new Label("");
+		categoryTxtLbl = new Label("");
+		sizeTxtLbl = new Label("");
 		
 		offerBtn = new Button("Make Offer");
 		confirmBtn = new Button("Confirm");
 		cancelBtn = new Button("Cancel");
 		buyBtn = new Button("Buy");
 		addToWishlistBtn = new Button("Add to wishlist");
+		confirmDetailBtn = new Button("Confirm");
+		cancelDetailBtn = new Button("Cancel");
 		
 		table = new TableView<Item>();
 		
 		purchaseConfirmation = new Popup();
+		detailPopup = new Popup();
 	}
 	
 	public void initTable() {
@@ -175,6 +188,30 @@ public class BuyerHomePage extends Page{
 		BorderPane.setMargin(confirmLbl, new Insets(0,0,20,0));
 		purchaseConfirmationBp.setPadding(new Insets(20));
 		
+		detailBp.setMinWidth(200);
+		detailBp.setMinHeight(150);
+		detailPopup.getContent().add(detailBp);
+		detailBp.setStyle(" -fx-background-color: gray;");
+		detailBp.setCenter(sp);
+		sp.setContent(gp);
+		
+		gp.add(nameLbl, 0, 0);
+		gp.add(nameTxtLbl, 1, 0);
+		gp.add(categoryLbl, 0, 1);
+		gp.add(categoryTxtLbl, 1, 1);
+		gp.add(sizeLbl, 0, 2);
+		gp.add(sizeTxtLbl, 1, 2);
+		gp.add(priceLbl, 0, 3);
+		gp.add(priceTxtLbl, 1, 3);
+		
+		gp.setHgap(10);
+		gp.setVgap(10);
+		
+		HBox detailButtonLayout = new HBox(width/20);
+		detailButtonLayout.setAlignment(Pos.CENTER);
+		detailButtonLayout.getChildren().addAll(cancelDetailBtn, confirmDetailBtn);
+		BorderPane.setMargin(buttonLayout, new Insets(20,0,0,0));
+		detailBp.setBottom(detailButtonLayout);
 	}
 		
 	@Override
@@ -184,6 +221,8 @@ public class BuyerHomePage extends Page{
 		buyBtn.setOnAction(this::handlePage);
 		confirmBtn.setOnAction(this::handlePage);
 		cancelBtn.setOnAction(this::handlePage);
+		confirmDetailBtn.setOnAction(this::handlePage);
+		cancelDetailBtn.setOnAction(this::handlePage);
 		
 		homeNavItem.setOnAction(event -> sceneManager.switchToPageBuyer("buyer-homepage", userId));
 		wishlistNavItem.setOnAction(event -> sceneManager.switchToPageBuyer("wishlist-page", userId));
@@ -202,10 +241,21 @@ public class BuyerHomePage extends Page{
 		
 		if(item != null) {
 			if(e.getSource() == addToWishlistBtn) {
+				detailPopup.show(stage);
+				detail = ItemController.viewAcceptedItem(item.getItemId());
+				nameTxtLbl.setText(item.getItemName());
+				priceTxtLbl.setText(item.getItemPrice());
+				categoryTxtLbl.setText(item.getItemCategory());
+				sizeTxtLbl.setText(item.getItemSize());
+			} else if(e.getSource() == confirmDetailBtn) {
 				WishlistController.addWishlist(item.getItemId(), userId);
 				errorLbl.setText("Added to wishlist");
 				errorLbl.setTextFill(Color.GREEN);
-			} else if(e.getSource() == buyBtn) {
+				detailPopup.hide();
+			} else if(e.getSource() == cancelDetailBtn) {
+				detailPopup.hide();
+			}
+			else if(e.getSource() == buyBtn) {
 				purchaseConfirmation.show(stage);
 			} else if (e.getSource() == confirmBtn) {
 				TransactionController.purchaseItem(userId, item.getItemId());

@@ -167,8 +167,8 @@ public class RequestedItemPage extends Page{
 		bottomBp.setCenter(bottomLayout);
 		bottomBp.setPadding(new Insets(height / 17.54, width / 15.36, height / 17.54, width / 15.36));
 		
-		detailBp.setMinWidth(width/30);
-		detailBp.setMinHeight(height/15);
+		detailBp.setMinWidth(400);
+		detailBp.setMinHeight(250);
 		detailPopup.getContent().add(detailBp);
 		detailBp.setStyle(" -fx-background-color: gray;");
 		detailBp.setCenter(sp);
@@ -241,7 +241,7 @@ public class RequestedItemPage extends Page{
 		if(item != null) {
 			if (e.getSource() == detailBtn) {
 				detailPopup.show(stage);
-				detail = ItemController.getItem(item.getItemId());
+				detail = ItemController.viewRequestedItem(item.getItemId(), item.getItemStatus());
 				nameTxtLbl.setText(item.getItemName());
 				priceTxtLbl.setText(item.getItemPrice());
 				categoryTxtLbl.setText(item.getItemCategory());
