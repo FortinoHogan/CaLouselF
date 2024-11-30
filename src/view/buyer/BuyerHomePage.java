@@ -313,14 +313,12 @@ public class BuyerHomePage extends Page {
 				String offer = offerTxt.getText().trim();
 				String errorMsg = OfferController.checkOfferPriceValidation(item.getItemId(), offer);
 				if(errorMsg.equals("") && OfferController.checkLatestOfferPrice(item.getItemId()).isEmpty()) {
-					System.out.println("No offer");
 					OfferController.createOffer(userId, item.getItemId(), offer);
 					errorLbl.setText("Offer Succeed");
 		            errorLbl.setTextFill(Color.GREEN);
 		            offerPopup.hide();
 				}
 				else if(errorMsg.equals("")) {
-					System.out.println("Ada offer");
 					OfferController.updateOffer(userId, item.getItemId(), offer);
 					errorLbl.setText("Offer Succeed");
 		            errorLbl.setTextFill(Color.GREEN);
