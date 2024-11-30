@@ -25,7 +25,6 @@ import javafx.stage.Popup;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.Item;
-import model.Offer;
 import model.Page;
 
 public class BuyerHomePage extends Page {
@@ -43,7 +42,7 @@ public class BuyerHomePage extends Page {
 
 	private MenuBar navbar;
 	private Menu menu;
-	private MenuItem homeNavItem, wishlistNavItem, historyNavItem;
+	private MenuItem homeNavItem, wishlistNavItem, historyNavItem, logoutNavItem;
 
 	private Label titleLbl, errorLbl, errorOfferLbl, confirmLbl, nameLbl, priceLbl, categoryLbl, sizeLbl, nameTxtLbl, priceTxtLbl,
 			categoryTxtLbl, sizeTxtLbl, offerTxtLbl;
@@ -54,7 +53,6 @@ public class BuyerHomePage extends Page {
 
 	private TableView<Item> table;
 	private Item detail;
-	private Offer offer;
 
 	private Popup purchaseConfirmation, detailPopup, offerPopup;
 
@@ -91,8 +89,9 @@ public class BuyerHomePage extends Page {
 		homeNavItem = new MenuItem("Home");
 		wishlistNavItem = new MenuItem("Wishlist");
 		historyNavItem = new MenuItem("Purchase History");
+		logoutNavItem = new MenuItem("Logout");
 		navbar.getMenus().add(menu);
-		menu.getItems().addAll(homeNavItem, wishlistNavItem, historyNavItem);
+		menu.getItems().addAll(homeNavItem, wishlistNavItem, historyNavItem, logoutNavItem);
 
 		titleLbl = new Label("Home Page - Buyer");
 		titleLbl.setFont(new Font(24));
@@ -272,7 +271,8 @@ public class BuyerHomePage extends Page {
 		homeNavItem.setOnAction(event -> sceneManager.switchToPageBuyer("buyer-homepage", userId));
 		wishlistNavItem.setOnAction(event -> sceneManager.switchToPageBuyer("wishlist-page", userId));
 		historyNavItem.setOnAction(event -> sceneManager.switchToPageBuyer("purchase-history-page", userId));
-
+		logoutNavItem.setOnAction(event -> sceneManager.switchToPage("login"));
+		
 	}
 
 	@Override
@@ -306,14 +306,14 @@ public class BuyerHomePage extends Page {
 				String latestOffer = OfferController.checkLatestOfferPrice(item.getItemId());
 				if (latestOffer == null) {
 					offerTxtLbl.setText("No Offer Yet");
-				}else {
+				} else {
 					offerTxtLbl.setText("Previous Offer: " + latestOffer);
 				}
 			} else if (e.getSource() == confirmOfferBtn) {
 				String offer = offerTxt.getText().trim();
 				String errorMsg = OfferController.checkOfferPriceValidation(item.getItemId(), offer);
-				if(errorMsg.equals("") && OfferController.checkLatestOfferPrice(item.getItemId()).isEmpty()) {
-					OfferController.createOffer(userId, item.getItemId(), offer);
+				if(errorMsg.equals("") && OfferController.checkLatestOfferPrice(item.getItemId()) == null) {
+					ItemController.offerPrice(item.getItemId(), offer, userId);
 					errorLbl.setText("Offer Succeed");
 		            errorLbl.setTextFill(Color.GREEN);
 		            offerPopup.hide();

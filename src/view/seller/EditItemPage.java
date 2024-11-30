@@ -37,7 +37,7 @@ public class EditItemPage extends Page{
 	
 	private MenuBar navbar;
 	private Menu menu;
-	private MenuItem uploadNavItem, homeNavItem, myItemNavItem, offerItemNavItem;
+	private MenuItem uploadNavItem, homeNavItem, myItemNavItem, offerItemNavItem, logoutNavItem;
 	
 	private Label titleLbl, errorLbl, nameLbl, categoryLbl, sizeLbl, priceLbl;
 	private TextField nameTxt, categoryTxt, sizeTxt, priceTxt;
@@ -74,8 +74,9 @@ public class EditItemPage extends Page{
 		uploadNavItem = new MenuItem("Upload");
 		myItemNavItem = new MenuItem("My Item");
 		offerItemNavItem = new MenuItem("Offer Item");
+		logoutNavItem = new MenuItem("Logout");
 		navbar.getMenus().add(menu);
-		menu.getItems().addAll(homeNavItem, uploadNavItem, myItemNavItem, offerItemNavItem);
+		menu.getItems().addAll(homeNavItem, uploadNavItem, myItemNavItem, offerItemNavItem, logoutNavItem);
 		
 		titleLbl = new Label("Edit Item");
 		titleLbl.setFont(new Font(24));
@@ -147,6 +148,8 @@ public class EditItemPage extends Page{
 		homeNavItem.setOnAction(event -> sceneManager.switchToPageSeller("seller-homepage", userId));
 		uploadNavItem.setOnAction(event -> sceneManager.switchToPageSeller("upload-item", userId));
 		myItemNavItem.setOnAction(event -> sceneManager.switchToPageSeller("seller-item-page", userId));
+		offerItemNavItem.setOnAction(event -> sceneManager.switchToPageSeller("offer-item-page", userId));
+		logoutNavItem.setOnAction(event -> sceneManager.switchToPage("login"));
 		
 	}
 

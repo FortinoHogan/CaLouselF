@@ -30,7 +30,7 @@ public class UploadItemPage extends Page{
 	
 	private MenuBar navbar;
 	private Menu menu;
-	private MenuItem uploadNavItem, homeNavItem, myItemNavItem, offerItemNavItem;
+	private MenuItem uploadNavItem, homeNavItem, myItemNavItem, offerItemNavItem, logoutNavItem;
 	
 	private Label nameLbl, categoryLbl, sizeLbl, priceLbl, titleLbl, validateLbl;
 	private TextField nameTxt, categoryTxt, sizeTxt, priceTxt;
@@ -65,8 +65,9 @@ public class UploadItemPage extends Page{
 		uploadNavItem = new MenuItem("Upload");
 		myItemNavItem = new MenuItem("My Item");
 		offerItemNavItem = new MenuItem("Offer Item");
+		logoutNavItem = new MenuItem("Logout");
 		navbar.getMenus().add(menu);
-		menu.getItems().addAll(homeNavItem, uploadNavItem, myItemNavItem, offerItemNavItem);
+		menu.getItems().addAll(homeNavItem, uploadNavItem, myItemNavItem, offerItemNavItem, logoutNavItem);
 		
 		titleLbl = new Label("Upload Item");
 		titleLbl.setFont(new Font(24));
@@ -139,6 +140,8 @@ public class UploadItemPage extends Page{
 		homeNavItem.setOnAction(event -> sceneManager.switchToPageSeller("seller-homepage", userId));
 		uploadNavItem.setOnAction(event -> sceneManager.switchToPageSeller("upload-item", userId));
 		myItemNavItem.setOnAction(event -> sceneManager.switchToPageSeller("seller-item-page", userId));
+		offerItemNavItem.setOnAction(event -> sceneManager.switchToPageSeller("offer-item-page", userId));
+		logoutNavItem.setOnAction(event -> sceneManager.switchToPage("login"));
 		
 	}
 	
@@ -154,7 +157,7 @@ public class UploadItemPage extends Page{
 			
 			String errorMsg = ItemController.checkItemValidation(name, category, size, price);
 			if(errorMsg.equals("")) {
-				ItemController.uploadItem(name, category, size, price);
+				ItemController.uploadItem(name, category, size, price, userId);
 				validateLbl.setText("Item Uploaded");
 	            validateLbl.setTextFill(Color.GREEN);
 	            nameTxt.setText("");

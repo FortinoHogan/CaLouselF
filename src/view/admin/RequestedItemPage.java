@@ -37,7 +37,7 @@ public class RequestedItemPage extends Page{
 	
 	private MenuBar navbar;
 	private Menu menu;
-	private MenuItem homeNavItem, viewRequestedItemNavItem;
+	private MenuItem homeNavItem, viewRequestedItemNavItem, logoutNavItem;
 	
 	private Label titleLbl, errorLbl, errorReasonLbl, reasonLbl, nameLbl, priceLbl, categoryLbl, sizeLbl, nameTxtLbl, priceTxtLbl, categoryTxtLbl, sizeTxtLbl;
 	private TextField reasonTxt;
@@ -79,8 +79,9 @@ public class RequestedItemPage extends Page{
 		menu = new Menu("Action");
 		homeNavItem = new MenuItem("Home");
 		viewRequestedItemNavItem = new MenuItem("Requested Item");
+		logoutNavItem = new MenuItem("Logout");
 		navbar.getMenus().add(menu);
-		menu.getItems().addAll(homeNavItem, viewRequestedItemNavItem);
+		menu.getItems().addAll(homeNavItem, viewRequestedItemNavItem, logoutNavItem);
 		
 		titleLbl = new Label("Requested Item Page");
 		titleLbl.setFont(new Font(24));
@@ -228,6 +229,7 @@ public class RequestedItemPage extends Page{
 		
 		homeNavItem.setOnAction(event -> sceneManager.switchToPage("admin-homepage"));
 		viewRequestedItemNavItem.setOnAction(event -> sceneManager.switchToPage("requested-item-page"));
+		logoutNavItem.setOnAction(event -> sceneManager.switchToPage("login"));
 		
 	}
 	

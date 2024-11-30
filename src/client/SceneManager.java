@@ -61,6 +61,10 @@ public class SceneManager {
             	UploadItemPage uploadItemPage = new UploadItemPage(primaryStage, userId);
             	setScene(uploadItemPage.createPageScene());
             	break;
+	    	case "offer-item-page":
+	    		OfferItemPage offerItemPage = new OfferItemPage(primaryStage, userId);
+	    		setScene(offerItemPage.createPageScene());
+	    		break;
     	}
     	
     }

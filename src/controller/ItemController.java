@@ -4,17 +4,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import model.Item;
+import model.OfferDetail;
 import util.Connect;
 
 public class ItemController {
 
 	private static Connect con = Connect.getInstance();
 
-	public static void uploadItem(String itemName, String itemCategory, String itemSize, String itemPrice) {
+	public static void uploadItem(String itemName, String itemCategory, String itemSize, String itemPrice, String userId) {
 
 		String query = "INSERT INTO Item " + "VALUES ('" + generateItemId() + "', '" + itemName + "', '" + itemSize
-				+ "', '" + itemPrice + "', '" + itemCategory + "', '" + "Pending" + "', '" + "-" + "', '" + "No offer"
-				+ "')";
+				+ "', '" + itemPrice + "', '" + itemCategory + "', '" + "Pending" + "', '" + "0" + "', '" + "No offer"
+				+ "', '" + userId + "')";
 
 		con.execUpdate(query);
 
@@ -34,8 +35,16 @@ public class ItemController {
 
 	public static void deleteItem(String itemId) {
 
+		String queryTr = String.format("DELETE FROM Transaction WHERE Item_id = '%s'", itemId);
+		con.execUpdate(queryTr);
+		
+		String queryOf = String.format("DELETE FROM Offer WHERE Item_id = '%s'", itemId);
+		con.execUpdate(queryOf);
+		
+		String queryWi = String.format("DELETE FROM Wishlist WHERE Item_id = '%s'", itemId);
+		con.execUpdate(queryWi);
+		
 		String query = String.format("DELETE FROM Item WHERE Item_id = '%s'", itemId);
-
 		con.execUpdate(query);
 	}
 
@@ -140,16 +149,38 @@ public class ItemController {
 		
 	}
 
-	public static void offerPrice(String itemId, String itemPrice) {
+	public static void offerPrice(String itemId, String itemPrice, String userId) {
 
+		String query = "INSERT INTO Offer(Offer_id, User_id, Item_id, Offer_price, Offer_status) " + "VALUES ('"
+				+ generateOfferId() + "', '" + userId + "', '" + itemId +  "', '" + itemPrice + "', 'Pending')";
+
+		con.execUpdate(query);
+		
+		String queryIt = String.format("UPDATE Item SET Item_offer_status = 'Offering' WHERE Item_id = '%s'", itemId);
+		
+		con.execUpdate(queryIt);
+		
 	}
 
 	public static void acceptOffer(String itemId) {
 
+		String query = String.format("UPDATE Offer SET Offer_status = 'Accepted' WHERE Item_id = '%s'", itemId);
+		
+		con.execUpdate(query);
+			
+		
 	}
 
 	public static void declineOffer(String itemId) {
 
+		String query = String.format("DELETE FROM Offer WHERE Item_id = '%s'", itemId);
+		
+		con.execUpdate(query);
+		
+		String queryIt = String.format("UPDATE Item SET Item_offer_status = 'No Offer' WHERE Item_id = '%s'", itemId);
+		
+		con.execUpdate(queryIt);
+		
 	}
 
 	public static void approveItem(String itemId) {
@@ -193,8 +224,37 @@ public class ItemController {
 
 	}
 
-	public static void viewOfferItem(String userId) {
+	public static ArrayList<OfferDetail> viewOfferItem(String userId) {
 
+		String query = String.format("SELECT o.Offer_id, o.User_id, o.Item_id, o.Offer_price, i.Item_name, i.Item_category, i.Item_size, i.Item_price\n"
+									+ "FROM Offer o "
+									+ "JOIN ITEM i ON o.Item_id = i.Item_id "
+									+ "WHERE i.User_id = '%s' "
+									+ "AND o.Offer_status = 'Pending'"
+									, userId);
+		
+		ArrayList<OfferDetail> offers = new ArrayList<OfferDetail>();
+		
+		con.res = con.execQuery(query);
+		try {
+			while (con.res.next()) {
+				String itemId = con.res.getString("o.Item_id");
+				String buyerId = con.res.getString("o.User_id");
+				String itemName = con.res.getString("i.Item_name");
+				String itemSize = con.res.getString("i.Item_size");
+				String itemPrice = con.res.getString("i.Item_price");
+				String itemCategory = con.res.getString("i.Item_category");
+				String offerPrice = con.res.getString("o.Offer_price");
+				String offerId = con.res.getString("o.Offer_id");
+
+				offers.add(new OfferDetail(offerId, buyerId, itemId, itemName, itemCategory, itemSize, itemPrice, offerPrice));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return offers;
+		
 	}
 
 	private static boolean isNumber(String price) {
@@ -300,5 +360,31 @@ public class ItemController {
 			return "";
 		}
 		
+	}
+	
+	private static String generateOfferId() {
+
+		String lastOfferId = null;
+		String newOfferId = "OF001";
+
+		String query = "SELECT Offer_id FROM Offer ORDER BY Offer_id DESC LIMIT 1";
+		try {
+			con.res = con.execQuery(query);
+			if (con.res.next()) {
+				lastOfferId = con.res.getString("Offer_id");
+			}
+
+			if (lastOfferId != null) {
+				String numericPart = lastOfferId.substring(2);
+				int newIdNumber = Integer.parseInt(numericPart) + 1;
+				newOfferId = "OF" + String.format("%03d", newIdNumber);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return newOfferId;
+
 	}
 }

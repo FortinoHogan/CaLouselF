@@ -33,7 +33,7 @@ public class AdminHomePage extends Page{
 	
 	private MenuBar navbar;
 	private Menu menu;
-	private MenuItem homeNavItem, viewRequestedItemNavItem;
+	private MenuItem homeNavItem, viewRequestedItemNavItem, logoutNavItem;
 	
 	private Label titleLbl, errorLbl;
 	
@@ -67,8 +67,9 @@ public class AdminHomePage extends Page{
 		menu = new Menu("Action");
 		homeNavItem = new MenuItem("Home");
 		viewRequestedItemNavItem = new MenuItem("Requested Item");
+		logoutNavItem = new MenuItem("Logout");
 		navbar.getMenus().add(menu);
-		menu.getItems().addAll(homeNavItem, viewRequestedItemNavItem);
+		menu.getItems().addAll(homeNavItem, viewRequestedItemNavItem, logoutNavItem);
 		
 		titleLbl = new Label("Home Page - Admin");
 		titleLbl.setFont(new Font(24));
@@ -147,7 +148,7 @@ public class AdminHomePage extends Page{
 		
 		homeNavItem.setOnAction(event -> sceneManager.switchToPage("admin-homepage"));
 		viewRequestedItemNavItem.setOnAction(event -> sceneManager.switchToPage("requested-item-page"));
-		
+		logoutNavItem.setOnAction(event -> sceneManager.switchToPage("login"));
 	}
 
 	@Override

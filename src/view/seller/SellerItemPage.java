@@ -22,11 +22,13 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.Popup;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import model.Item;
@@ -35,29 +37,34 @@ import model.Page;
 public class SellerItemPage extends Page {
 
 	private SceneManager sceneManager;
+	private Stage stage;
 	private Rectangle2D screen = Screen.getPrimary().getVisualBounds();
 	private double width = screen.getWidth() * 0.80;
 	private double height = screen.getHeight() * 0.85;
 
-	private BorderPane layoutBp, navbarBp, titleBp, bottomBp;
+	private BorderPane layoutBp, navbarBp, titleBp, bottomBp, deleteBp;
 	private GridPane gp;
 	private ScrollPane sp;
+	private FlowPane fp;
 
 	private MenuBar navbar;
 	private Menu menu;
-	private MenuItem uploadNavItem, homeNavItem, myItemNavItem, offerItemNavItem;
+	private MenuItem uploadNavItem, homeNavItem, myItemNavItem, offerItemNavItem, logoutNavItem;
 
-	private Label nameLbl, categoryLbl, sizeLbl, priceLbl, titleLbl, errorLbl;
+	private Label nameLbl, categoryLbl, sizeLbl, priceLbl, titleLbl, errorLbl, deleteLbl;
 	private TextField nameTxt, categoryTxt, sizeTxt, priceTxt;
-	private Button editBtn, deleteBtn;
+	private Button editBtn, deleteBtn, yesBtn, noBtn;
 
 	private TableView<Item> table;
 
 	private String userId;
+	
+	private Popup deleteConfirmation;
 
 	public SellerItemPage(Stage stage, String userId) {
 
 		this.userId = userId;
+		this.stage = stage;
 		sceneManager = new SceneManager(stage);
 		initPage();
 		initTable();
@@ -73,9 +80,11 @@ public class SellerItemPage extends Page {
 		navbarBp = new BorderPane();
 		titleBp = new BorderPane();
 		bottomBp = new BorderPane();
+		deleteBp = new BorderPane();
 
 		gp = new GridPane();
 		sp = new ScrollPane();
+		fp = new FlowPane();
 
 		navbar = new MenuBar();
 		menu = new Menu("Action");
@@ -83,18 +92,25 @@ public class SellerItemPage extends Page {
 		uploadNavItem = new MenuItem("Upload");
 		myItemNavItem = new MenuItem("My Item");
 		offerItemNavItem = new MenuItem("Offer Item");
+		logoutNavItem = new MenuItem("Logout");
 		navbar.getMenus().add(menu);
-		menu.getItems().addAll(homeNavItem, uploadNavItem, myItemNavItem, offerItemNavItem);
+		menu.getItems().addAll(homeNavItem, uploadNavItem, myItemNavItem, offerItemNavItem, logoutNavItem);
 
 		titleLbl = new Label("My Item");
 		titleLbl.setFont(new Font(24));
 		errorLbl = new Label("");
+		deleteLbl = new Label("Are you sure want to delete this item?");
+		deleteLbl.setFont(new Font(18));
 
 		table = new TableView<Item>();
 
 		editBtn = new Button("Edit");
 		deleteBtn = new Button("Delete");
+		yesBtn = new Button("Yes");
+		noBtn = new Button("No");
 
+		deleteConfirmation = new Popup();
+		
 	}
 
 	public void initTable() {
@@ -157,6 +173,24 @@ public class SellerItemPage extends Page {
 
 		bottomBp.setCenter(bottomLayout);
 		bottomBp.setPadding(new Insets(height / 17.54, width / 15.36, height / 17.54, width / 15.36));
+		
+		fp.getChildren().add(yesBtn);
+		fp.getChildren().add(noBtn);
+		fp.setHgap(20);
+		fp.setAlignment(Pos.CENTER);
+		
+		deleteBp.setMinWidth(width / 30);
+		deleteBp.setMinHeight(height / 15);
+		deleteConfirmation.getContent().add(deleteBp);
+
+		deleteBp.setTop(deleteLbl);
+		deleteBp.setCenter(fp);
+		deleteBp.setStyle(" -fx-background-color: gray;");
+		BorderPane.setAlignment(deleteLbl, Pos.CENTER);
+		BorderPane.setAlignment(deleteBp, Pos.CENTER);
+		BorderPane.setMargin(deleteLbl, new Insets(0, 0, 20, 0));
+		deleteLbl.setStyle("-fx-text-fill: white;");
+		deleteBp.setPadding(new Insets(20));
 
 	}
 
@@ -165,11 +199,15 @@ public class SellerItemPage extends Page {
 
 		editBtn.setOnAction(this::handlePage);
 		deleteBtn.setOnAction(this::handlePage);
+		yesBtn.setOnAction(this::handlePage);
+		noBtn.setOnAction(this::handlePage);
 
 		homeNavItem.setOnAction(event -> sceneManager.switchToPageSeller("seller-homepage", userId));
 		uploadNavItem.setOnAction(event -> sceneManager.switchToPageSeller("upload-item", userId));
 		myItemNavItem.setOnAction(event -> sceneManager.switchToPageSeller("seller-item-page", userId));
-
+		offerItemNavItem.setOnAction(event -> sceneManager.switchToPageSeller("offer-item-page", userId));
+		logoutNavItem.setOnAction(event -> sceneManager.switchToPage("login"));
+		
 	}
 
 	@Override
@@ -184,10 +222,15 @@ public class SellerItemPage extends Page {
 			if (e.getSource() == editBtn) {
 				sceneManager.switchToPageItem(item, userId);
 			} else if (e.getSource() == deleteBtn) {
+				deleteConfirmation.show(stage);
+			} else if (e.getSource() == yesBtn) {
 				ItemController.deleteItem(item.getItemId());
 				refreshTable();
 				errorLbl.setText("Item Deleted");
 				errorLbl.setTextFill(Color.GREEN);
+				deleteConfirmation.hide();
+			} else if (e.getSource() == noBtn) {
+				deleteConfirmation.hide();
 			}
 		} else if(item == null) {
 			errorLbl.setText("Item Not Selected");

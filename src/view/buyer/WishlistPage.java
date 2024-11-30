@@ -40,7 +40,7 @@ public class WishlistPage extends Page{
 	
 	private MenuBar navbar;
 	private Menu menu;
-	private MenuItem homeNavItem, wishlistNavItem, historyNavItem;
+	private MenuItem homeNavItem, wishlistNavItem, historyNavItem, logoutNavItem;
 
 	private Label titleLbl, errorLbl;
 	private Button removeBtn;
@@ -76,8 +76,9 @@ public class WishlistPage extends Page{
 		homeNavItem = new MenuItem("Home");
 		wishlistNavItem = new MenuItem("Wishlist");
 		historyNavItem = new MenuItem("Purchase History");
+		logoutNavItem = new MenuItem("Logout");
 		navbar.getMenus().add(menu);
-		menu.getItems().addAll(homeNavItem, wishlistNavItem, historyNavItem);
+		menu.getItems().addAll(homeNavItem, wishlistNavItem, historyNavItem, logoutNavItem);
 		
 		titleLbl = new Label("Wishlist");
 		titleLbl.setFont(new Font(24));
@@ -158,6 +159,7 @@ public class WishlistPage extends Page{
 		homeNavItem.setOnAction(event -> sceneManager.switchToPageBuyer("buyer-homepage", userId));
 		wishlistNavItem.setOnAction(event -> sceneManager.switchToPageBuyer("wishlist-page", userId));
 		historyNavItem.setOnAction(event -> sceneManager.switchToPageBuyer("purchase-history-page", userId));
+		logoutNavItem.setOnAction(event -> sceneManager.switchToPage("login"));
 		
 	}
 

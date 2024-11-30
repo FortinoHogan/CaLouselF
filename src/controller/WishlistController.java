@@ -10,6 +10,7 @@ public class WishlistController {
 	private static Connect con = Connect.getInstance();
 
 	public static ArrayList<WishlistItem> viewWishlist(String wishlist_Id, String user_Id) {
+		
 		String query = String.format(
 				"SELECT Wishlist_id, w.User_id, w.Item_id, Item_name, Item_size, Item_price, Item_category, Item_status, Item_wishlist, Item_offer_status "
 						+ "FROM Wishlist w " + "JOIN Item i ON w.Item_id = i.Item_id " + "WHERE w.User_id = '%s'",
@@ -37,17 +38,34 @@ public class WishlistController {
 		}
 
 		return wishlistItem;
+		
 	}
 
 	public static void addWishlist(String itemId, String userId) {
+		
 		String query = "INSERT INTO Wishlist VALUES ('" + generateWishlistId() + "', '" + itemId + "', '" + userId + "')";
+		
 		con.execUpdate(query);
+		
+		String queryIt = String.format("UPDATE Item SET Item_wishlist = (SELECT COUNT(*) FROM Wishlist WHERE Item_id = '%s') WHERE Item_id = '%s'", itemId, itemId);
+		
+		con.execUpdate(queryIt);
 	}
 
 	public static void removeWishlist(String wishlistId) {
+		
 		String query = String.format("DELETE FROM Wishlist WHERE Wishlist_id = '%s'", wishlistId);
 
 		con.execUpdate(query);
+		
+		String queryIt = String.format(
+		        "UPDATE Item SET Item_wishlist = CAST(Item_wishlist AS INT) - 1 " +
+		        "WHERE Item_id = (SELECT Item_id FROM Wishlist WHERE Wishlist_id = '%s')",
+		        wishlistId
+		    );
+		
+		con.execUpdate(queryIt);
+		
 	}
 
 	private static String generateWishlistId() {
