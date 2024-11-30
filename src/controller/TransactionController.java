@@ -18,6 +18,10 @@ public class TransactionController {
 		
 		con.execUpdate(query);
 		
+		String queryDel = String.format("DELETE FROM Whislist WHERE Item_id LIKE '%s'", itemId);
+		
+		con.execUpdate(query);
+		
 	}
 	
 	public static ArrayList<TransactionHistory> viewHistory(String userId){
