@@ -11,24 +11,28 @@ public class OfferController {
 	private static Connect con = Connect.getInstance();
 	
 	public static String checkLatestOfferPrice(String itemId) {
-		String query = "SELECT Offer_price FROM offer WHERE Item_id = "+ itemId +" ORDER BY Offer_price DESC";
-		String latestOfferPrice = "";
+		String query = "SELECT Offer_price FROM Offer WHERE Item_id = '" + itemId + "'";
+		String latestOfferPrice = null;
 		try {
-		latestOfferPrice = con.res.getString("Offer_price");
+			con.res = con.execQuery(query);
+			if(con.res.next()) {
+				latestOfferPrice = con.res.getString("Offer_price");
+			} 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		System.out.println("asd" + latestOfferPrice);
 		return latestOfferPrice;
 	}
 	
 	public static String checkOfferPriceValidation(String itemId, String offerPrice) {
-		String latestOfferPrice = OfferController.checkLatestOfferPrice(itemId);
+		String latestOfferPrice = checkLatestOfferPrice(itemId);
 		if (offerPrice.isEmpty()) {
 			return "Offer price cannot be empty";
-		} else if (Integer.parseInt(offerPrice) > 0){
+		} else if (Integer.parseInt(offerPrice) <= 0){
 			return "Offer price must be more than 0";
-		} else if (Integer.parseInt("latestOfferPrice") > Integer.parseInt(offerPrice)) {
-			return "Offer price cannot be lower than the highest offer.";
+		} else if (!latestOfferPrice.isEmpty() && Integer.parseInt(latestOfferPrice) >= Integer.parseInt(offerPrice)) {
+			return "Offer price cannot be lower than the highest offer";
 		}
 		else {
 			return "";
@@ -37,14 +41,14 @@ public class OfferController {
 	
 	public static void createOffer(String userId, String itemId, String offerPrice) {
 
-		String query = "INSERT INTO Transaction(Offer_id, User_id, Item_id, Offer_price, Offer_status) " + "VALUES ('"
+		String query = "INSERT INTO Offer(Offer_id, User_id, Item_id, Offer_price, Offer_status) " + "VALUES ('"
 				+ generateOfferId() + "', '" + userId + "', '" + itemId +  "', '" + offerPrice + "', 'Pending')";
 
 		con.execUpdate(query);
 	}
 	
 	public static void updateOffer(String userId, String itemId, String offerPrice) {
-		String query = "UPDATE offer SET User_id = " + userId + ", Offer_price = " + offerPrice + " WHERE Item_id = " + itemId;
+		String query = "UPDATE Offer SET User_id = " + userId + ", Offer_price = " + offerPrice + " WHERE Item_id = " + itemId;
 		con.execUpdate(query);
 	}
 

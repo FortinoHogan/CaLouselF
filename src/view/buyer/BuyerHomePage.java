@@ -45,11 +45,12 @@ public class BuyerHomePage extends Page {
 	private Menu menu;
 	private MenuItem homeNavItem, wishlistNavItem, historyNavItem;
 
-	private Label titleLbl, errorLbl, confirmLbl, nameLbl, priceLbl, categoryLbl, sizeLbl, nameTxtLbl, priceTxtLbl,
+	private Label titleLbl, errorLbl, errorOfferLbl, confirmLbl, nameLbl, priceLbl, categoryLbl, sizeLbl, nameTxtLbl, priceTxtLbl,
 			categoryTxtLbl, sizeTxtLbl, offerTxtLbl;
-	private TextField offerTxt;
 	private Button offerBtn, confirmBtn, cancelBtn, buyBtn, addToWishlistBtn, confirmDetailBtn, cancelDetailBtn,
-			confirmOfferBtn, cancelOfferBtn;
+			confirmOfferBtn, cancelOfferBtn, searchBtn;
+			private TextField searchTxt;
+	private TextField offerTxt;
 
 	private TableView<Item> table;
 	private Item detail;
@@ -96,6 +97,7 @@ public class BuyerHomePage extends Page {
 		titleLbl = new Label("Home Page - Buyer");
 		titleLbl.setFont(new Font(24));
 		errorLbl = new Label("");
+		errorOfferLbl = new Label("");
 		confirmLbl = new Label("Are you sure want to purchase this item?");
 		confirmLbl.setFont(new Font(18));
 		nameLbl = new Label("Item Name");
@@ -109,7 +111,10 @@ public class BuyerHomePage extends Page {
 		offerTxtLbl = new Label("");
 		
 		offerTxt = new TextField();
-
+		searchTxt = new TextField();
+		searchTxt.setPromptText("Search...");
+		
+		searchBtn = new Button("Search");
 		offerBtn = new Button("Make Offer");
 		confirmBtn = new Button("Confirm");
 		cancelBtn = new Button("Cancel");
@@ -147,14 +152,20 @@ public class BuyerHomePage extends Page {
 
 		table.getColumns().addAll(nameCol, categoryCol, sizeCol, priceCol);
 
-		ArrayList<Item> items = ItemController.viewItem();
+		refreshTable(ItemController.viewItem());
+		
+	}
+	
+	public void refreshTable(ArrayList<Item> items) {
 
+		table.getItems().clear();
+		
 		for (Item item : items) {
 			table.getItems().add(item);
 		}
 
 	}
-
+	
 	@Override
 	public void setAlignment() {
 
@@ -187,7 +198,7 @@ public class BuyerHomePage extends Page {
 		bottomLayout.setAlignment(Pos.CENTER);
 		buttonLayout.setAlignment(Pos.CENTER);
 		bottomLayout.getChildren().addAll(errorLbl, buttonLayout);
-		buttonLayout.getChildren().addAll(buyBtn, addToWishlistBtn);
+		buttonLayout.getChildren().addAll(offerBtn, buyBtn, addToWishlistBtn);
 
 		bottomBp.setCenter(bottomLayout);
 		bottomBp.setPadding(new Insets(height / 17.54, width / 15.36, height / 17.54, width / 15.36));
@@ -224,6 +235,24 @@ public class BuyerHomePage extends Page {
 		detailButtonLayout.getChildren().addAll(cancelDetailBtn, confirmDetailBtn);
 		BorderPane.setMargin(buttonLayout, new Insets(20, 0, 0, 0));
 		detailBp.setBottom(detailButtonLayout);
+		
+		HBox searchLayout = new HBox(width / 20);
+		searchLayout.setAlignment(Pos.BOTTOM_RIGHT);
+		searchLayout.getChildren().addAll(searchTxt, searchBtn);
+	    
+		titleBp.setBottom(searchLayout);
+		
+		VBox offerLayout = new VBox(height / 17.5);
+		offerLayout.setAlignment(Pos.CENTER);
+		HBox offerButtonLayout = new HBox(width/20);
+		offerButtonLayout.setAlignment(Pos.CENTER);
+		offerButtonLayout.getChildren().addAll(cancelOfferBtn, confirmOfferBtn);
+		offerLayout.getChildren().addAll(offerTxtLbl, offerTxt, errorOfferLbl, offerButtonLayout);
+		offerLayout.setPadding(new Insets(20));
+		
+		offerPopup.getContent().add(offerLayout);
+		offerLayout.setStyle(" -fx-background-color: lightgray;");
+		offerLayout.setMinWidth(400);
 	}
 
 	@Override
@@ -236,6 +265,9 @@ public class BuyerHomePage extends Page {
 		cancelBtn.setOnAction(this::handlePage);
 		confirmDetailBtn.setOnAction(this::handlePage);
 		cancelDetailBtn.setOnAction(this::handlePage);
+		searchBtn.setOnAction(this::handlePage);
+		confirmOfferBtn.setOnAction(this::handlePage);
+		cancelOfferBtn.setOnAction(this::handlePage);
 
 		homeNavItem.setOnAction(event -> sceneManager.switchToPageBuyer("buyer-homepage", userId));
 		wishlistNavItem.setOnAction(event -> sceneManager.switchToPageBuyer("wishlist-page", userId));
@@ -252,6 +284,9 @@ public class BuyerHomePage extends Page {
 		item = tsm.getSelectedItem();
 
 		if (item != null) {
+			if(e.getSource() == searchBtn) {
+				refreshTable(ItemController.browseItem(searchTxt.getText()));
+			}
 			if (e.getSource() == addToWishlistBtn) {
 				detailPopup.show(stage);
 				detail = ItemController.viewAcceptedItem(item.getItemId());
@@ -268,34 +303,31 @@ public class BuyerHomePage extends Page {
 				detailPopup.hide();
 			} else if (e.getSource() == offerBtn) {
 				offerPopup.show(stage);
-				detail = ItemController.viewAcceptedItem(item.getItemId());
-				nameTxtLbl.setText(item.getItemName());
-				priceTxtLbl.setText(item.getItemPrice());
-				categoryTxtLbl.setText(item.getItemCategory());
-				sizeTxtLbl.setText(item.getItemSize());
 				String latestOffer = OfferController.checkLatestOfferPrice(item.getItemId());
-				if (latestOffer.isEmpty()) {
+				if (latestOffer == null) {
 					offerTxtLbl.setText("No Offer Yet");
 				}else {
-					offerTxtLbl.setText(latestOffer);
+					offerTxtLbl.setText("Previous Offer: " + latestOffer);
 				}
 			} else if (e.getSource() == confirmOfferBtn) {
 				String offer = offerTxt.getText().trim();
 				String errorMsg = OfferController.checkOfferPriceValidation(item.getItemId(), offer);
 				if(errorMsg.equals("") && OfferController.checkLatestOfferPrice(item.getItemId()).isEmpty()) {
+					System.out.println("No offer");
 					OfferController.createOffer(userId, item.getItemId(), offer);
 					errorLbl.setText("Offer Succeed");
 		            errorLbl.setTextFill(Color.GREEN);
 		            offerPopup.hide();
 				}
 				else if(errorMsg.equals("")) {
+					System.out.println("Ada offer");
 					OfferController.updateOffer(userId, item.getItemId(), offer);
 					errorLbl.setText("Offer Succeed");
 		            errorLbl.setTextFill(Color.GREEN);
 		            offerPopup.hide();
 				} else {
-					errorLbl.setText(errorMsg);
-		            errorLbl.setTextFill(Color.RED);
+					errorOfferLbl.setText(errorMsg);
+		            errorOfferLbl.setTextFill(Color.RED);
 				}
 			} else if (e.getSource() == cancelOfferBtn) {
 				offerPopup.hide();
@@ -310,8 +342,12 @@ public class BuyerHomePage extends Page {
 				purchaseConfirmation.hide();
 			}
 		} else if (item == null) {
-			errorLbl.setText("Item Not Selected");
-			errorLbl.setTextFill(Color.RED);
+			if(e.getSource() == searchBtn) {
+				refreshTable(ItemController.browseItem(searchTxt.getText()));
+			} else {
+				errorLbl.setText("Item Not Selected");
+				errorLbl.setTextFill(Color.RED);
+			}
 		}
 	}
 
