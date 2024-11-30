@@ -14,13 +14,13 @@ public class TransactionController {
 	
 	public static void purchaseItem(String userId, String itemId) {
 		
-		String query = "INSERT INTO Transaction(Transaction_id, User_id, Item_id) " + "VALUES ('"+ generateTransactionId() +"', '"+ userId +"', '"+ itemId +"')";
+		String transactionId = generateTransactionId();
 		
-		con.execUpdate(query);
+		createTransaction(transactionId, userId, itemId);
 		
 		String queryDel = String.format("DELETE FROM Whislist WHERE Item_id LIKE '%s'", itemId);
 		
-		con.execUpdate(query);
+		con.execUpdate(queryDel);
 		
 	}
 	
@@ -49,7 +49,11 @@ public class TransactionController {
 		
 	}
 	
-	public static void createTransaction(String transactionId) {
+	public static void createTransaction(String transactionId, String userId, String itemId) {
+		
+		String query = "INSERT INTO Transaction(Transaction_id, User_id, Item_id) " + "VALUES ('"+ transactionId +"', '"+ userId +"', '"+ itemId +"')";
+		
+		con.execUpdate(query);
 		
 	}
 	
