@@ -39,8 +39,31 @@ public class ItemController {
 		con.execUpdate(query);
 	}
 
-	public static void browseItem(String itemName) {
+	public static ArrayList<Item> browseItem(String _itemName) {
 
+		String query = "SELECT * FROM Item WHERE Item_status LIKE 'Approved' AND LOWER(Item_name) LIKE LOWER('%" + _itemName + "%')";
+		ArrayList<Item> items = new ArrayList<>();
+		con.res = con.execQuery(query);
+		try {
+			while (con.res.next()) {
+				String itemId = con.res.getString("Item_id");
+				String itemName = con.res.getString("Item_name");
+				String itemSize = con.res.getString("Item_size");
+				String itemPrice = con.res.getString("Item_price");
+				String itemCategory = con.res.getString("Item_category");
+				String itemStatus = con.res.getString("Item_status");
+				String itemWishlist = con.res.getString("Item_wishlist");
+				String itemOfferStatus = con.res.getString("Item_offer_status");
+
+				items.add(new Item(itemId, itemName, itemSize, itemPrice, itemCategory, itemStatus, itemWishlist,
+						itemOfferStatus));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return items;
+		
 	}
 
 	public static ArrayList<Item> viewItem() {

@@ -6,12 +6,14 @@ import client.SceneManager;
 import controller.ItemController;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -36,6 +38,9 @@ public class AdminHomePage extends Page{
 	private Label titleLbl, errorLbl;
 	
 	private TableView<Item> table;
+	
+	private Button searchBtn;
+	private TextField searchTxt;
 	
 	public AdminHomePage(Stage stage) {
 		
@@ -71,6 +76,11 @@ public class AdminHomePage extends Page{
 		
 		table = new TableView<Item>();
 		
+		searchTxt = new TextField();
+		searchTxt.setPromptText("Search...");
+		
+		searchBtn = new Button("Search");
+		
 	}
 	
 	private void initTable() {
@@ -93,12 +103,18 @@ public class AdminHomePage extends Page{
 		
 		table.getColumns().addAll(nameCol, categoryCol, sizeCol, priceCol);
 		
-		ArrayList<Item> items = ItemController.viewItem();
+		refreshTable(ItemController.viewItem());
 		
-		for(Item item : items) {
+	}
+	
+	public void refreshTable(ArrayList<Item> items) {
+
+		table.getItems().clear();
+		
+		for (Item item : items) {
 			table.getItems().add(item);
 		}
-		
+
 	}
 	
 	@Override
@@ -116,10 +132,18 @@ public class AdminHomePage extends Page{
 		table.setMaxWidth(width/1.065);
 		table.setMaxHeight(height/2);
 		
+		HBox searchLayout = new HBox(width / 20);
+		searchLayout.setAlignment(Pos.BOTTOM_RIGHT);
+		searchLayout.getChildren().addAll(searchTxt, searchBtn);
+	    
+		titleBp.setBottom(searchLayout);
+		
 	}
 	
 	@Override
 	public void setHandler() {
+		
+		searchBtn.setOnAction(this::handlePage);
 		
 		homeNavItem.setOnAction(event -> sceneManager.switchToPage("admin-homepage"));
 		viewRequestedItemNavItem.setOnAction(event -> sceneManager.switchToPage("requested-item-page"));
@@ -128,6 +152,10 @@ public class AdminHomePage extends Page{
 
 	@Override
 	public void handlePage(ActionEvent e) {
+		
+		if(e.getSource() == searchBtn) {
+			refreshTable(ItemController.browseItem(searchTxt.getText()));
+		}
 		
 	}
 	

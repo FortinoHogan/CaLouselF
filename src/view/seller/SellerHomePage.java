@@ -38,7 +38,8 @@ public class SellerHomePage extends Page{
 	private MenuItem uploadNavItem, homeNavItem, myItemNavItem, offerItemNavItem;
 	
 	private Label titleLbl, errorLbl;
-	private Button editBtn;
+	private Button editBtn, searchBtn;
+	private TextField searchTxt;
 	
 	private TableView<Item> table;
 	
@@ -81,6 +82,10 @@ public class SellerHomePage extends Page{
 		
 		table = new TableView<Item>();
 		
+		searchTxt = new TextField();
+		searchTxt.setPromptText("Search...");
+		
+		searchBtn = new Button("Search");
 		editBtn = new Button("Edit");
 		
 	}
@@ -105,12 +110,18 @@ public class SellerHomePage extends Page{
 		
 		table.getColumns().addAll(nameCol, categoryCol, sizeCol, priceCol);
 		
-		ArrayList<Item> items = ItemController.viewItem();
+		refreshTable(ItemController.viewItem());
 		
-		for(Item item : items) {
+	}
+	
+	public void refreshTable(ArrayList<Item> items) {
+
+		table.getItems().clear();
+		
+		for (Item item : items) {
 			table.getItems().add(item);
 		}
-		
+
 	}
 	
 	@Override
@@ -127,11 +138,19 @@ public class SellerHomePage extends Page{
 		
 		table.setMaxWidth(width/1.065);
 		table.setMaxHeight(height/2);
+		
+		HBox searchLayout = new HBox(width / 20);
+		searchLayout.setAlignment(Pos.BOTTOM_RIGHT);
+		searchLayout.getChildren().addAll(searchTxt, searchBtn);
+	    
+		titleBp.setBottom(searchLayout);
 	
 	}
 	
 	@Override
 	public void setHandler() {
+		
+		searchBtn.setOnAction(this::handlePage);
 		
 		homeNavItem.setOnAction(event -> sceneManager.switchToPageSeller("seller-homepage", userId));
 		uploadNavItem.setOnAction(event -> sceneManager.switchToPageSeller("upload-item", userId));
@@ -141,6 +160,10 @@ public class SellerHomePage extends Page{
 
 	@Override
 	public void handlePage(ActionEvent e) {
+		
+		if(e.getSource() == searchBtn) {
+			refreshTable(ItemController.browseItem(searchTxt.getText()));
+		}
 		
 	}
 	
