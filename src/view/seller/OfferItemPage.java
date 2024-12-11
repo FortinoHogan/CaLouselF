@@ -218,12 +218,14 @@ public class OfferItemPage extends Page{
 		VBox reasonLayout = new VBox(height/17.5);
 		HBox reasonBtnLayout = new HBox(width / 20);
 		reasonBtnLayout.setAlignment(Pos.CENTER);
+		reasonLayout.setMinWidth(width/15);
 		reasonLayout.setAlignment(Pos.CENTER);
 		reasonBtnLayout.getChildren().addAll(cancelBtn, submitBtn);
 		reasonLayout.getChildren().addAll(errorReasonLbl, reasonBtnLayout);
 		declineBp.setBottom(reasonLayout);
 		BorderPane.setMargin(reasonLayout, new Insets(20,0,0,0));
 		declineBp.setPadding(new Insets(20));
+		declineBp.setMinWidth(width/2.5);
 
 	}
 
