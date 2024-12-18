@@ -28,10 +28,8 @@ public class SceneManager {
                 setScene(registerPage.createPageScene());
                 break;
             case "login":
-//                LoginPage loginPage = new LoginPage(primaryStage);
-//                setScene(loginPage.createPageScene());
-            	OfferItemPage offerItemPage = new OfferItemPage(primaryStage, "US002");
-	    		setScene(offerItemPage.createPageScene());
+                LoginPage loginPage = new LoginPage(primaryStage);
+                setScene(loginPage.createPageScene());
                 break;
             case "admin-homepage":
             	AdminHomePage adminHomePage = new AdminHomePage(primaryStage);
